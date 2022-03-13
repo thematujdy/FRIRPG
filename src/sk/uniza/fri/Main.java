@@ -1,9 +1,7 @@
 package sk.uniza.fri;
 
-import sk.uniza.fri.engine.sound.SoundPlayer;
 import sk.uniza.fri.engine.window.Window;
 
-import java.awt.Color;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +16,7 @@ public class Main {
         window.setVisible(true);
         window.makeUnresizable();
         window.addKeyListener(new sk.uniza.fri.engine.window.KeyListener());
-        window.addGameFrame();
+        window.addGameFrame(48, 1, 16, 12);
+        window.startGameThread();
     }
 }

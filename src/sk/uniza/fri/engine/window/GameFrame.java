@@ -9,21 +9,32 @@ import java.awt.Color;
  *
  * @author matus
  */
-public class GameFrame extends JPanel {
+public class GameFrame extends JPanel implements Runnable {
 
-    private final int baseTitleSize = 48;
-    private final int multiplicator = 1;
-    private final int finalTitleSize = this.baseTitleSize * this.multiplicator;
+    Thread gameThread;
 
-    private final int maxColTitles = 16;
-    private final int maxRowTitles = 12;
+    public GameFrame(int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
+        final int finalTitleSize = graphicTitleSize * multiplicator;
 
-    private final int frameWidth = this.finalTitleSize * this.maxColTitles;
-    private final int frameHeight = this.finalTitleSize * this.maxRowTitles;
+        final int frameWidth = finalTitleSize * maxColTitles;
+        final int frameHeight = finalTitleSize * maxRowTitles;
 
-    public GameFrame() {
-        this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
+        this.setPreferredSize(new Dimension(frameWidth, frameHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
+    }
+
+    public void startGame () {
+        this.gameThread = new Thread(this);
+        this.gameThread.start();
+    }
+
+    @Override
+    public void run() {
+
+        while (this.gameThread != null) {
+            System.out.println("Running");
+        }
+
     }
 }

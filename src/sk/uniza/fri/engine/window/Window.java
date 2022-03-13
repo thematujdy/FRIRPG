@@ -2,7 +2,6 @@ package sk.uniza.fri.engine.window;
 
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
-import java.awt.*;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -13,6 +12,7 @@ public class Window {
 
     private String name;
     private final JFrame win;
+    private GameFrame gameFrame;
 
     public Window (String name, int width, int height, String imgPath) {
         this.name = name;
@@ -103,9 +103,17 @@ public class Window {
         this.win.addKeyListener(keyListener);
     }
 
-    public void addGameFrame () {
-        GameFrame gameFrame = new GameFrame();
-        this.win.add(gameFrame);
+    public void addGameFrame (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
+        this.gameFrame = new GameFrame(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles);
+        this.win.add(this.gameFrame);
         this.win.pack();
+    }
+
+    public void startGameThread () {
+        if (this.gameFrame != null) {
+            this.gameFrame.startGame();
+        } else {
+            System.out.println("Game thread has not been initialized!");
+        }
     }
 }
