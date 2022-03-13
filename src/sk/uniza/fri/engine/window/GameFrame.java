@@ -12,8 +12,6 @@ public class GameFrame extends JPanel implements Runnable {
 
     private final int graphicTileSize;
     private final int finalTileSize;
-    private int maxColTiles;
-    private int maxRowTiles;
 
     private int playerXPos;
     private int playerYPos;
@@ -28,15 +26,12 @@ public class GameFrame extends JPanel implements Runnable {
         this.playerXPos = startingPlayerX;
         this.playerYPos = startingPlayerY;
 
-        this.maxRowTiles = maxRowTiles;
-        this.maxColTiles = maxColTiles;
-
         this.graphicTileSize = graphicTileSize;
 
         this.finalTileSize = graphicTileSize * multiplicator;
 
-        final int frameWidth = this.finalTileSize * this.maxColTiles;
-        final int frameHeight = this.finalTileSize * this.maxRowTiles;
+        final int frameWidth = this.finalTileSize * maxColTiles;
+        final int frameHeight = this.finalTileSize * maxRowTiles;
 
         this.setPreferredSize(new Dimension(frameWidth, frameHeight));
         this.setBackground(Color.BLACK);
@@ -89,19 +84,26 @@ public class GameFrame extends JPanel implements Runnable {
         double delta = 0;
         long prevTime = System.nanoTime();
         long curTime;
+        long timer = 0;
+        int count = 0;
 
         while (this.gameThread != null) {
-
-            System.out.println("Game is running");
-
             curTime = System.nanoTime();
             delta += (curTime - prevTime) / interval;
+            timer += (curTime - prevTime);
             prevTime = curTime;
 
             if (delta >= 1) {
                 this.update();
                 this.repaint();
                 delta--;
+                count++;
+            }
+
+            if (timer >= 1000000000) {
+                System.out.println("FPS:" + count);
+                count = 0;
+                timer = 0;
             }
         }
 
