@@ -15,8 +15,8 @@ public class Main {
         Window window = new Window("RPG","fri.png");
         window.setVisible(true);
         window.makeUnresizable();
-        window.addKeyListener(new sk.uniza.fri.engine.window.KeyListener());
         window.addGameFrame(48, 1, 16, 12);
+        window.setTileStartingCords(3,1);
         window.startGameThread();
     }
 }

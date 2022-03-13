@@ -2,6 +2,7 @@ package sk.uniza.fri.engine.window;
 
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
+import java.awt.Canvas;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -13,6 +14,7 @@ public class Window {
     private String name;
     private final JFrame win;
     private GameFrame gameFrame;
+    private Canvas canvas;
 
     public Window (String name, int width, int height, String imgPath) {
         this.name = name;
@@ -82,10 +84,6 @@ public class Window {
         this.win.setTitle(name);
     }
 
-    public JFrame getWindow () {
-        return this.win;
-    }
-
     public void setIcon (String path) {
         ImageIcon icon = new ImageIcon(path);
         this.win.setIconImage(icon.getImage());
@@ -97,10 +95,6 @@ public class Window {
 
     public void makeUnresizable () {
         this.win.setResizable(false);
-    }
-
-    public void addKeyListener (KeyListener keyListener) {
-        this.win.addKeyListener(keyListener);
     }
 
     public void addGameFrame (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
@@ -115,5 +109,21 @@ public class Window {
         } else {
             System.out.println("Game thread has not been initialized!");
         }
+    }
+
+    public void setTileStartingCords (int colTile, int rowTile) {
+        if (this.gameFrame != null) {
+            this.gameFrame.setTileStartingCords(colTile, rowTile);
+        } else {
+            System.out.println("Game thread has not been initialized!");
+        }
+    }
+
+    public void addCanvas () {
+        this.canvas = new Canvas();
+    }
+
+    public Canvas getCanvas () {
+        return this.canvas;
     }
 }
