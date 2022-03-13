@@ -14,11 +14,10 @@ import java.awt.Color;
 public class Main {
 
     public static void main(String[] args) {
-        Window window = new Window("RPG", 600, 600, "fri.png");
+        Window window = new Window("RPG","fri.png");
         window.setVisible(true);
         window.makeUnresizable();
         window.addKeyListener(new sk.uniza.fri.engine.window.KeyListener());
-        window.addCanvas();
-        window.getCanvas().setBackground(new Color(255, 255, 255));
+        window.addGameFrame();
     }
 }

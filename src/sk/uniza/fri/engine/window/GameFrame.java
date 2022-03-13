@@ -1,6 +1,8 @@
 package sk.uniza.fri.engine.window;
 
 import javax.swing.JPanel;
+import java.awt.Dimension;
+import java.awt.Color;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -18,4 +20,10 @@ public class GameFrame extends JPanel {
 
     private final int frameWidth = this.finalTitleSize * this.maxColTitles;
     private final int frameHeight = this.finalTitleSize * this.maxRowTitles;
+
+    public GameFrame() {
+        this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
+        this.setBackground(Color.BLACK);
+        this.setDoubleBuffered(true);
+    }
 }

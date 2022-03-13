@@ -2,7 +2,7 @@ package sk.uniza.fri.engine.window;
 
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
-import java.awt.Canvas;
+import java.awt.*;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -13,7 +13,6 @@ public class Window {
 
     private String name;
     private final JFrame win;
-    private Canvas canvas;
 
     public Window (String name, int width, int height, String imgPath) {
         this.name = name;
@@ -21,7 +20,6 @@ public class Window {
         this.win.setSize(width, height);
         this.setIcon(imgPath);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -30,7 +28,6 @@ public class Window {
         this.win = new JFrame(this.name);
         this.win.setSize(width, height);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -40,7 +37,6 @@ public class Window {
         this.win.setSize(width, height);
         this.setIcon(imgPath);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -49,7 +45,6 @@ public class Window {
         this.win = new JFrame(this.name);
         this.win.setSize(width, height);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -59,7 +54,6 @@ public class Window {
         this.setIcon(imgPath);
         this.setSize(500, 500);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -68,7 +62,6 @@ public class Window {
         this.win = new JFrame(this.name);
         this.setSize(500, 500);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -77,7 +70,6 @@ public class Window {
         this.win = new JFrame(this.name);
         this.setSize(500, 500);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.canvas = null;
         this.win.setLocationRelativeTo(null);
     }
 
@@ -103,11 +95,6 @@ public class Window {
         this.win.setVisible(visible);
     }
 
-    public void addCanvas () {
-        this.canvas = new Canvas();
-        this.win.add(this.canvas);
-    }
-
     public void makeUnresizable () {
         this.win.setResizable(false);
     }
@@ -116,7 +103,9 @@ public class Window {
         this.win.addKeyListener(keyListener);
     }
 
-    public Canvas getCanvas () {
-        return this.canvas;
+    public void addGameFrame () {
+        GameFrame gameFrame = new GameFrame();
+        this.win.add(gameFrame);
+        this.win.pack();
     }
 }
