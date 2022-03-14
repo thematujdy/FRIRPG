@@ -117,7 +117,7 @@ public class Window {
 
     public void setTileStartingCords (int colTile, int rowTile) {
         if (this.gameFrame != null) {
-            this.gameFrame.setTileStartingCords(colTile, rowTile);
+            this.gameFrame.moveToTile(colTile, rowTile);
         } else {
             System.out.println("Game thread has not been initialized!");
         }

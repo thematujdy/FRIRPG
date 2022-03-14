@@ -12,11 +12,11 @@ import sk.uniza.fri.engine.window.Window;
 public class Main {
 
     public static void main(String[] args) {
-        Window window = new Window("RPG","fri.png");
+        Window window = new Window("RPG", "fri.png");
         window.setVisible(true);
         window.makeUnresizable();
         window.addGameFrame(48, 1, 16, 12);
-        window.setTileStartingCords(3,1);
+        window.setTileStartingCords(1, 1);
         window.startGameThread();
     }
 }

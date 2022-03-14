@@ -24,6 +24,8 @@ public class GameFrame extends JPanel implements Runnable {
     private final KeyListener keyListener = new sk.uniza.fri.engine.window.KeyListener();
     private Thread gameThread;
 
+    private boolean isMoving = false;
+
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles,
                      int maxRowTiles, int startingPlayerX, int startingPlayerY) {
         this.playerXPos = startingPlayerX;
@@ -44,8 +46,8 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles) {
-        this.playerXPos = 100;
-        this.playerYPos = 100;
+        this.playerXPos = 0;
+        this.playerYPos = 0;
 
         this.graphicTileSize = graphicTileSize;
 
@@ -66,7 +68,7 @@ public class GameFrame extends JPanel implements Runnable {
         this.playerXPos = startingPlayerX;
     }
 
-    public void setTileStartingCords (int colTile, int rowTile) {
+    public void moveToTile (int colTile, int rowTile) {
         try {
             this.playerXPos = (rowTile * this.finalTileSize) - this.finalTileSize;
             this.playerYPos = (colTile * this.finalTileSize) - this.finalTileSize;
@@ -114,14 +116,15 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void update () {
-        if (this.keyListener.isUp()) {
-            this.playerXPos -= this.finalTileSize;
-        } else if (this.keyListener.isDown()) {
-            this.playerXPos += this.finalTileSize;
-        } else if (this.keyListener.isLeft()) {
-            this.playerYPos -= this.finalTileSize;
-        } else if (this.keyListener.isRight()) {
-            this.playerYPos += this.finalTileSize;
+
+        if (this.keyListener.isUp() && !this.isMoving) {
+            this.movePlayer("up");
+        } else if (this.keyListener.isDown() && !this.isMoving) {
+            this.movePlayer("down");
+        } else if (this.keyListener.isLeft() && !this.isMoving) {
+            this.movePlayer("left");
+        } else if (this.keyListener.isRight() && !this.isMoving) {
+            this.movePlayer("right");
         }
     }
 
@@ -130,8 +133,35 @@ public class GameFrame extends JPanel implements Runnable {
 
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
-        graphics2D.fillRect(this.playerYPos, this.playerXPos, this.graphicTileSize, this.graphicTileSize);
+        graphics2D.fillRect(this.playerYPos, this.playerXPos, this.finalTileSize, this.finalTileSize);
         graphics2D.dispose();
 
+    }
+
+    private void movePlayer (String where) {
+        int milisecondsToWait = 150;
+
+        Thread waitUp = new Thread(() -> {
+            this.isMoving = true;
+            int x = 0;
+            while (x < this.finalTileSize) {
+                try {
+                    Thread.sleep(milisecondsToWait / this.finalTileSize);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                switch (where) {
+                    case "up" -> this.playerXPos--;
+                    case "down" -> this.playerXPos++;
+                    case "left" -> this.playerYPos--;
+                    case "right" -> this.playerYPos++;
+                }
+
+                x++;
+            }
+            this.isMoving = false;
+        });
+
+        waitUp.start();
     }
 }
