@@ -15,7 +15,6 @@ import java.awt.Dimension;
  */
 public class GameFrame extends JPanel implements Runnable {
 
-    private final int graphicTileSize;
     private final int finalTileSize;
 
     private int playerXPos;
@@ -30,8 +29,6 @@ public class GameFrame extends JPanel implements Runnable {
                      int maxRowTiles, int startingPlayerX, int startingPlayerY) {
         this.playerXPos = startingPlayerX;
         this.playerYPos = startingPlayerY;
-
-        this.graphicTileSize = graphicTileSize;
 
         this.finalTileSize = graphicTileSize * multiplicator;
 
@@ -48,8 +45,6 @@ public class GameFrame extends JPanel implements Runnable {
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles) {
         this.playerXPos = 0;
         this.playerYPos = 0;
-
-        this.graphicTileSize = graphicTileSize;
 
         this.finalTileSize = graphicTileSize * multiplicator;
 
@@ -139,7 +134,7 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     private void movePlayer (String where) {
-        int milisecondsToWait = 150;
+        int milisecondsToWait = 100;
 
         Thread waitUp = new Thread(() -> {
             this.isMoving = true;
