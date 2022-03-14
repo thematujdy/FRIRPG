@@ -1,7 +1,12 @@
-package sk.uniza.fri.engine.window;
+package sk.uniza.fri.game;
+
+import sk.uniza.fri.engine.window.KeyListener;
 
 import javax.swing.JPanel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Dimension;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -16,10 +21,8 @@ public class GameFrame extends JPanel implements Runnable {
     private int playerXPos;
     private int playerYPos;
 
-    int FPS = 60;
-
-    KeyListener keyListener = new sk.uniza.fri.engine.window.KeyListener();
-    Thread gameThread;
+    private final KeyListener keyListener = new sk.uniza.fri.engine.window.KeyListener();
+    private Thread gameThread;
 
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles,
                      int maxRowTiles, int startingPlayerX, int startingPlayerY) {
@@ -80,7 +83,8 @@ public class GameFrame extends JPanel implements Runnable {
     @Override
     public void run() {
 
-        double interval = 1000000000/(double)this.FPS;
+        int fps = 60;
+        double interval = 1000000000 / (double)fps;
         double delta = 0;
         long prevTime = System.nanoTime();
         long curTime;
@@ -110,13 +114,13 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void update () {
-        if (this.keyListener.up) {
+        if (this.keyListener.isUp()) {
             this.playerXPos -= this.finalTileSize;
-        } else if (this.keyListener.down) {
+        } else if (this.keyListener.isDown()) {
             this.playerXPos += this.finalTileSize;
-        } else if (this.keyListener.left) {
+        } else if (this.keyListener.isLeft()) {
             this.playerYPos -= this.finalTileSize;
-        } else if (this.keyListener.right) {
+        } else if (this.keyListener.isRight()) {
             this.playerYPos += this.finalTileSize;
         }
     }
@@ -124,7 +128,7 @@ public class GameFrame extends JPanel implements Runnable {
     public void paintComponent (Graphics graphics) {
         super.paintComponent(graphics);
 
-        Graphics2D graphics2D = (Graphics2D) graphics;
+        Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
         graphics2D.fillRect(this.playerYPos, this.playerXPos, this.graphicTileSize, this.graphicTileSize);
         graphics2D.dispose();

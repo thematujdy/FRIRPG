@@ -9,7 +9,13 @@ import java.awt.event.KeyEvent;
  */
 public class KeyListener implements java.awt.event.KeyListener {
 
-    boolean up, down, left, right, a, b, exit;
+    private boolean up;
+    private boolean down;
+    private boolean left;
+    private boolean right;
+    private boolean a;
+    private boolean b;
+    private boolean exit;
 
     public KeyListener() {
 
@@ -37,7 +43,7 @@ public class KeyListener implements java.awt.event.KeyListener {
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            this.right =true;
+            this.right = true;
         }
 
         if (key == KeyEvent.VK_Y) {
@@ -70,7 +76,7 @@ public class KeyListener implements java.awt.event.KeyListener {
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            this.right =false;
+            this.right = false;
         }
 
         if (key == KeyEvent.VK_Y) {
@@ -84,5 +90,34 @@ public class KeyListener implements java.awt.event.KeyListener {
         if (key == KeyEvent.VK_Q) {
             this.exit = false;
         }
+    }
+
+
+    public boolean isUp() {
+        return this.up;
+    }
+
+    public boolean isDown() {
+        return this.down;
+    }
+
+    public boolean isLeft() {
+        return this.left;
+    }
+
+    public boolean isRight() {
+        return this.right;
+    }
+
+    public boolean isA() {
+        return this.a;
+    }
+
+    public boolean isB() {
+        return this.b;
+    }
+
+    public boolean isExit() {
+        return this.exit;
     }
 }

@@ -1,5 +1,7 @@
 package sk.uniza.fri.engine.window;
 
+import sk.uniza.fri.game.GameFrame;
+
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import java.awt.Canvas;
@@ -103,6 +105,8 @@ public class Window {
         this.win.pack();
     }
 
+
+    //oddelit engine a game setteri
     public void startGameThread () {
         if (this.gameFrame != null) {
             this.gameFrame.startGame();
