@@ -1,6 +1,7 @@
 package sk.uniza.fri.game;
 
 import sk.uniza.fri.engine.window.KeyListener;
+import sk.uniza.fri.engine.window.Window;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -25,24 +26,9 @@ public class GameFrame extends JPanel implements Runnable {
 
     private boolean isMoving = false;
 
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles,
-                     int maxRowTiles, int startingPlayerX, int startingPlayerY) {
-        this.playerXPos = startingPlayerX;
-        this.playerYPos = startingPlayerY;
+    private final Window window;
 
-        this.finalTileSize = graphicTileSize * multiplicator;
-
-        final int frameWidth = this.finalTileSize * maxColTiles;
-        final int frameHeight = this.finalTileSize * maxRowTiles;
-
-        this.setPreferredSize(new Dimension(frameWidth, frameHeight));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);
-        this.addKeyListener(this.keyListener);
-        this.setFocusable(true);
-    }
-
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles) {
+    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, Window window) {
         this.playerXPos = 0;
         this.playerYPos = 0;
 
@@ -56,6 +42,7 @@ public class GameFrame extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keyListener);
         this.setFocusable(true);
+        this.window = window;
     }
 
     public void setCustomStartingCords (int startingPlayerX, int startingPlayerY) {
@@ -121,6 +108,10 @@ public class GameFrame extends JPanel implements Runnable {
         } else if (this.keyListener.isRight() && !this.isMoving) {
             this.movePlayer("right");
         }
+
+        if (this.keyListener.isExit()) {
+            this.window.closeGameFrame();
+        }
     }
 
     public void paintComponent (Graphics graphics) {
@@ -134,7 +125,7 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     private void movePlayer (String where) {
-        int milisecondsToWait = 100;
+        int milisecondsToWait = 200;
 
         Thread waitUp = new Thread(() -> {
             this.isMoving = true;

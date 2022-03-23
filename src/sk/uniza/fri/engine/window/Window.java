@@ -1,9 +1,10 @@
 package sk.uniza.fri.engine.window;
 
+import sk.uniza.fri.engine.menu.Menu;
 import sk.uniza.fri.game.GameFrame;
 
-import javax.swing.JFrame;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import java.awt.Canvas;
 
 /**
@@ -100,7 +101,7 @@ public class Window {
     }
 
     public void addGameFrame (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
-        this.gameFrame = new GameFrame(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles);
+        this.gameFrame = new GameFrame(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles, this);
         this.win.add(this.gameFrame);
         this.win.pack();
     }
@@ -129,5 +130,17 @@ public class Window {
 
     public Canvas getCanvas () {
         return this.canvas;
+    }
+
+    public void closeGameFrame () {
+        this.win.getContentPane().remove(this.gameFrame);
+        this.win.pack();
+        this.gameFrame = null;
+    }
+
+    public void goToMenu (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
+        Menu menu = new Menu(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles);
+        this.win.add(menu);
+        this.win.pack();
     }
 }
