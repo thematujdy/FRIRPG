@@ -21,12 +21,13 @@ public class GameFrame extends JPanel implements Runnable {
     private int playerXPos;
     private int playerYPos;
 
-    private final KeyListener keyListener = new sk.uniza.fri.engine.window.KeyListener();
     private Thread gameThread;
 
-    private boolean isMoving = false;
+    private boolean isMoving;
 
     private final Window window;
+
+    private boolean exit;
 
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, Window window) {
         this.playerXPos = 0;
@@ -40,9 +41,9 @@ public class GameFrame extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(frameWidth, frameHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
-        this.addKeyListener(this.keyListener);
-        this.setFocusable(true);
         this.window = window;
+        this.isMoving = false;
+        this.exit = false;
     }
 
     public void setCustomStartingCords (int startingPlayerX, int startingPlayerY) {
@@ -60,8 +61,13 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void startGame () {
+        this.exit = false;
         this.gameThread = new Thread(this);
         this.gameThread.start();
+    }
+
+    public void stop () {
+        this.exit = true;
     }
 
     @Override
@@ -75,7 +81,7 @@ public class GameFrame extends JPanel implements Runnable {
         long timer = 0;
         int count = 0;
 
-        while (this.gameThread != null) {
+        while (this.gameThread != null && !this.exit) {
             curTime = System.nanoTime();
             delta += (curTime - prevTime) / interval;
             timer += (curTime - prevTime);
@@ -99,17 +105,19 @@ public class GameFrame extends JPanel implements Runnable {
 
     public void update () {
 
-        if (this.keyListener.isUp() && !this.isMoving) {
+        //keylistener zmenit na keybinding
+
+        if (this.window.getKeyListener().isUp() && !this.isMoving) {
             this.movePlayer("up");
-        } else if (this.keyListener.isDown() && !this.isMoving) {
+        } else if (this.window.getKeyListener().isDown() && !this.isMoving) {
             this.movePlayer("down");
-        } else if (this.keyListener.isLeft() && !this.isMoving) {
+        } else if (this.window.getKeyListener().isLeft() && !this.isMoving) {
             this.movePlayer("left");
-        } else if (this.keyListener.isRight() && !this.isMoving) {
+        } else if (this.window.getKeyListener().isRight() && !this.isMoving) {
             this.movePlayer("right");
         }
 
-        if (this.keyListener.isExit()) {
+        if (this.window.getKeyListener().isExit()) {
             this.window.closeGameFrame();
         }
     }

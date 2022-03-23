@@ -18,7 +18,7 @@ public class KeyListener implements java.awt.event.KeyListener {
     private boolean exit;
 
     public KeyListener() {
-
+        
     }
 
     @Override

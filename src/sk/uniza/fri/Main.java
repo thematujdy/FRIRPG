@@ -20,7 +20,8 @@ public class Main {
         Window window = new Window("RPG", "fri.png", tilePixels, tileMultiplicator, colTiles, rowTiles);
         window.setVisible(true);
         window.makeUnresizable();
-        window.goToMenu();
+        window.startGameFrame();
+        //window.goToMenu();
         //SoundPlayer.playSound("death_sound.wav");
     }
 }
