@@ -1,7 +1,7 @@
 package sk.uniza.fri.game;
 
-import sk.uniza.fri.engine.window.KeyListener;
 import sk.uniza.fri.engine.window.Window;
+import sk.uniza.fri.game.entities.player.Player;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -18,20 +18,15 @@ public class GameFrame extends JPanel implements Runnable {
 
     private final int finalTileSize;
 
-    private int playerXPos;
-    private int playerYPos;
-
     private Thread gameThread;
-
-    private boolean isMoving;
 
     private final Window window;
 
     private boolean exit;
 
+    private Player player;
+
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, Window window) {
-        this.playerXPos = 0;
-        this.playerYPos = 0;
 
         this.finalTileSize = graphicTileSize * multiplicator;
 
@@ -41,23 +36,24 @@ public class GameFrame extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(frameWidth, frameHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
+
         this.window = window;
-        this.isMoving = false;
         this.exit = false;
+
+        this.player = new Player(this);
+        this.player.setDefaultTile(1, 1);
     }
 
-    public void setCustomStartingCords (int startingPlayerX, int startingPlayerY) {
-        this.playerYPos = startingPlayerY;
-        this.playerXPos = startingPlayerX;
+    public int getFinalTileSize () {
+        return this.finalTileSize;
     }
 
-    public void moveToTile (int colTile, int rowTile) {
-        try {
-            this.playerXPos = (rowTile * this.finalTileSize) - this.finalTileSize;
-            this.playerYPos = (colTile * this.finalTileSize) - this.finalTileSize;
-        } catch (Exception e) {
-            System.out.println("Invalid starting cords by titles! " + e);
-        }
+    public int getTileX (int rowTile) {
+        return (rowTile * this.finalTileSize) - this.finalTileSize;
+    }
+
+    public int getTileY (int colTile) {
+        return (colTile * this.finalTileSize) - this.finalTileSize;
     }
 
     public void startGame () {
@@ -105,21 +101,6 @@ public class GameFrame extends JPanel implements Runnable {
 
     public void update () {
 
-        //keylistener zmenit na keybinding
-
-        if (this.window.getKeyListener().isUp() && !this.isMoving) {
-            this.movePlayer("up");
-        } else if (this.window.getKeyListener().isDown() && !this.isMoving) {
-            this.movePlayer("down");
-        } else if (this.window.getKeyListener().isLeft() && !this.isMoving) {
-            this.movePlayer("left");
-        } else if (this.window.getKeyListener().isRight() && !this.isMoving) {
-            this.movePlayer("right");
-        }
-
-        if (this.window.getKeyListener().isExit()) {
-            this.window.closeGameFrame();
-        }
     }
 
     public void paintComponent (Graphics graphics) {
@@ -127,35 +108,7 @@ public class GameFrame extends JPanel implements Runnable {
 
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
-        graphics2D.fillRect(this.playerYPos, this.playerXPos, this.finalTileSize, this.finalTileSize);
         graphics2D.dispose();
 
-    }
-
-    private void movePlayer (String where) {
-        int milisecondsToWait = 200;
-
-        Thread waitUp = new Thread(() -> {
-            this.isMoving = true;
-            int x = 0;
-            while (x < this.finalTileSize) {
-                try {
-                    Thread.sleep(milisecondsToWait / this.finalTileSize);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                switch (where) {
-                    case "up" -> this.playerXPos--;
-                    case "down" -> this.playerXPos++;
-                    case "left" -> this.playerYPos--;
-                    case "right" -> this.playerYPos++;
-                }
-
-                x++;
-            }
-            this.isMoving = false;
-        });
-
-        waitUp.start();
     }
 }
