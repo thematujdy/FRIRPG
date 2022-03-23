@@ -15,64 +15,23 @@ import java.awt.Canvas;
 public class Window {
 
     private String name;
+    private final int graphicTitleSize;
+    private final int multiplicator;
+    private final int maxColTitles;
+    private final int maxRowTitles;
     private final JFrame win;
     private GameFrame gameFrame;
     private Canvas canvas;
+    private Menu menu;
 
-    public Window (String name, int width, int height, String imgPath) {
+    public Window (String name, String imgPath, int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
         this.name = name;
-        this.win = new JFrame(this.name);
-        this.win.setSize(width, height);
-        this.setIcon(imgPath);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window (String name, int width, int height) {
-        this.name = name;
-        this.win = new JFrame(this.name);
-        this.win.setSize(width, height);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window (int width, int height, String imgPath) {
-        this.name = "Window";
-        this.win = new JFrame(this.name);
-        this.win.setSize(width, height);
-        this.setIcon(imgPath);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window (int width, int height) {
-        this.name = "Window";
-        this.win = new JFrame(this.name);
-        this.win.setSize(width, height);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window (String name, String imgPath) {
-        this.name = name;
+        this.graphicTitleSize = graphicTitleSize;
+        this.multiplicator = multiplicator;
+        this.maxColTitles = maxColTitles;
+        this.maxRowTitles = maxRowTitles;
         this.win = new JFrame(this.name);
         this.setIcon(imgPath);
-        this.setSize(500, 500);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window (String name) {
-        this.name = name;
-        this.win = new JFrame(this.name);
-        this.setSize(500, 500);
-        this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.win.setLocationRelativeTo(null);
-    }
-
-    public Window () {
-        this.name = "Window";
-        this.win = new JFrame(this.name);
         this.setSize(500, 500);
         this.win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.win.setLocationRelativeTo(null);
@@ -100,8 +59,10 @@ public class Window {
         this.win.setResizable(false);
     }
 
-    public void addGameFrame (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
-        this.gameFrame = new GameFrame(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles, this);
+    public void startGameFrame () {
+        this.quitMenu();
+        this.gameFrame = new GameFrame(this.graphicTitleSize, this.multiplicator, this.maxColTitles,
+                this.maxRowTitles, this);
         this.win.add(this.gameFrame);
         this.win.pack();
     }
@@ -135,12 +96,18 @@ public class Window {
     public void closeGameFrame () {
         this.win.getContentPane().remove(this.gameFrame);
         this.win.pack();
-        this.gameFrame = null;
+        this.goToMenu();
     }
 
-    public void goToMenu (int graphicTitleSize, int multiplicator, int maxColTitles, int maxRowTitles) {
-        Menu menu = new Menu(graphicTitleSize, multiplicator, maxColTitles, maxRowTitles);
-        this.win.add(menu);
+    public void goToMenu () {
+        this.menu = new Menu(this.graphicTitleSize, this.multiplicator, this.maxColTitles,
+                this.maxRowTitles, this);
+        this.win.add(this.menu);
+        this.win.pack();
+    }
+
+    public void quitMenu () {
+        this.win.getContentPane().remove(this.menu);
         this.win.pack();
     }
 }

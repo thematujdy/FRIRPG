@@ -17,10 +17,10 @@ public class Main {
         int colTiles = 16;
         int rowTiles = 12;
 
-        Window window = new Window("RPG", "fri.png");
+        Window window = new Window("RPG", "fri.png", tilePixels, tileMultiplicator, colTiles, rowTiles);
         window.setVisible(true);
         window.makeUnresizable();
-        window.goToMenu(tilePixels, tileMultiplicator, colTiles, rowTiles);
+        window.goToMenu();
         //SoundPlayer.playSound("death_sound.wav");
     }
 }
