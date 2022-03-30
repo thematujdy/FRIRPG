@@ -1,6 +1,6 @@
 package sk.uniza.fri.game.entities.player;
 
-import sk.uniza.fri.engine.window.KeyboardListener;
+import sk.uniza.fri.engine.window.KeyManager;
 import sk.uniza.fri.game.GameFrame;
 import sk.uniza.fri.game.entities.Entity;
 
@@ -18,13 +18,13 @@ import java.io.IOException;
 public class Player extends Entity {
 
     private final GameFrame gameFrame;
-    private final KeyboardListener keyListener;
+    private final KeyManager keyListener;
 
     private boolean isMoving;
 
     private BufferedImage test;
 
-    public Player(GameFrame gameFrame, KeyboardListener keyListener) {
+    public Player(GameFrame gameFrame, KeyManager keyListener) {
         this.gameFrame = gameFrame;
         this.keyListener = keyListener;
         this.isMoving = false;
@@ -89,10 +89,10 @@ public class Player extends Entity {
                     e.printStackTrace();
                 }
                 switch (where) {
-                    case 0 -> this.setX(this.getX() - 1);
-                    case 1 -> this.setX(this.getX() + 1);
-                    case 2 -> this.setY(this.getY() - 1);
-                    case 3 -> this.setY(this.getY() + 1);
+                    case 2 -> this.setX(this.getX() - 1);
+                    case 3 -> this.setX(this.getX() + 1);
+                    case 0 -> this.setY(this.getY() - 1);
+                    case 1 -> this.setY(this.getY() + 1);
                 }
 
                 x++;

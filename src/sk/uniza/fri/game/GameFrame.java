@@ -1,6 +1,6 @@
 package sk.uniza.fri.game;
 
-import sk.uniza.fri.engine.window.KeyboardListener;
+import sk.uniza.fri.engine.window.KeyManager;
 import sk.uniza.fri.game.entities.player.Player;
 
 import javax.swing.JPanel;
@@ -20,13 +20,11 @@ public class GameFrame extends JPanel implements Runnable {
 
     private Thread gameThread;
 
-    private boolean exit;
-
-    private final KeyboardListener keyListener;
+    private final KeyManager keyListener;
 
     private Player player;
 
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles) {
+    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, KeyManager keyListener) {
         this.finalTileSize = graphicTileSize * multiplicator;
 
         final int frameWidth = this.finalTileSize * maxColTiles;
@@ -36,7 +34,7 @@ public class GameFrame extends JPanel implements Runnable {
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
 
-        this.keyListener = new KeyboardListener();
+        this.keyListener = keyListener;
         this.addKeyListener(this.keyListener);
 
         this.setFocusable(true);
@@ -57,7 +55,6 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void startGame () {
-        this.exit = false;
         this.gameThread = new Thread(this);
         this.gameThread.start();
     }

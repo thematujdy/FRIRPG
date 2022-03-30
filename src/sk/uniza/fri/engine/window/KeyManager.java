@@ -1,13 +1,14 @@
 package sk.uniza.fri.engine.window;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * 12. 3. 2022 - 12:07
  *
  * @author matus
  */
-public class KeyboardListener implements java.awt.event.KeyListener {
+public class KeyManager implements KeyListener {
 
     private boolean up;
     private boolean down;
@@ -16,10 +17,6 @@ public class KeyboardListener implements java.awt.event.KeyListener {
     private boolean a;
     private boolean b;
     private boolean exit;
-
-    public KeyboardListener() {
-        
-    }
 
     @Override
     public void keyTyped(KeyEvent e) {
