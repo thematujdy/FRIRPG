@@ -1,11 +1,6 @@
 package sk.uniza.fri;
 
-import sk.uniza.fri.engine.window.KeyManager;
-import sk.uniza.fri.game.GameFrame;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-
+import sk.uniza.fri.engine.window.Window;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,24 +16,7 @@ public class Main {
         int colTiles = 16;
         int rowTiles = 12;
 
-        //Window JFrame
-        JFrame window = new JFrame("FRIRPG");
-        window.setIconImage(new ImageIcon("fri.png").getImage());
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setLocationRelativeTo(null);
-        window.setResizable(false);
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-
-        KeyManager keyManager = new KeyManager();
-
-        GameFrame gameFrame = new GameFrame(tilePixels, tileMultiplicator, colTiles, rowTiles, keyManager);
-
-        window.add(gameFrame);
-        window.pack();
-
-        window.addKeyListener(keyManager);
-
-        gameFrame.startGame();
+        Window window = new Window();
+        window.startGameFrame(tilePixels, tileMultiplicator, colTiles, rowTiles);
     }
 }
