@@ -1,6 +1,6 @@
 package sk.uniza.fri.game;
 
-import sk.uniza.fri.engine.window.Window;
+import sk.uniza.fri.engine.window.KeyboardListener;
 import sk.uniza.fri.game.entities.player.Player;
 
 import javax.swing.JPanel;
@@ -20,14 +20,13 @@ public class GameFrame extends JPanel implements Runnable {
 
     private Thread gameThread;
 
-    private final Window window;
-
     private boolean exit;
+
+    private final KeyboardListener keyListener;
 
     private Player player;
 
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, Window window) {
-
+    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles) {
         this.finalTileSize = graphicTileSize * multiplicator;
 
         final int frameWidth = this.finalTileSize * maxColTiles;
@@ -37,11 +36,12 @@ public class GameFrame extends JPanel implements Runnable {
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
 
-        this.window = window;
-        this.exit = false;
+        this.keyListener = new KeyboardListener();
+        this.addKeyListener(this.keyListener);
 
-        this.player = new Player(this);
-        this.player.setDefaultTile(1, 1);
+        this.setFocusable(true);
+
+        this.player = new Player(this, this.keyListener);
     }
 
     public int getFinalTileSize () {
@@ -62,10 +62,6 @@ public class GameFrame extends JPanel implements Runnable {
         this.gameThread.start();
     }
 
-    public void stop () {
-        this.exit = true;
-    }
-
     @Override
     public void run() {
 
@@ -77,7 +73,7 @@ public class GameFrame extends JPanel implements Runnable {
         long timer = 0;
         int count = 0;
 
-        while (this.gameThread != null && !this.exit) {
+        while (this.gameThread != null) {
             curTime = System.nanoTime();
             delta += (curTime - prevTime) / interval;
             timer += (curTime - prevTime);
@@ -100,7 +96,7 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void update () {
-
+        this.player.update();
     }
 
     public void paintComponent (Graphics graphics) {
@@ -108,7 +104,9 @@ public class GameFrame extends JPanel implements Runnable {
 
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
-        graphics2D.dispose();
 
+        this.player.paintComponent(graphics2D);
+
+        graphics2D.dispose();
     }
 }

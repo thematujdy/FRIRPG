@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
  *
  * @author matus
  */
-public class KeyListener implements java.awt.event.KeyListener {
+public class KeyboardListener implements java.awt.event.KeyListener {
 
     private boolean up;
     private boolean down;
@@ -17,7 +17,7 @@ public class KeyListener implements java.awt.event.KeyListener {
     private boolean b;
     private boolean exit;
 
-    public KeyListener() {
+    public KeyboardListener() {
         
     }
 

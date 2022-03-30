@@ -9,6 +9,11 @@ public class Entity implements IEntity {
 
     private int x;
     private int y;
+    // 0 = up
+    // 1 = down
+    // 2 = left
+    // 3 = right
+    private int direction;
 
     @Override
     public int getX() {
@@ -28,5 +33,19 @@ public class Entity implements IEntity {
     @Override
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public void setDirection(int direction) {
+        if (direction == 0 || direction == 1 || direction == 2 || direction == 3) {
+            this.direction = direction;
+        } else {
+            System.out.println("Wrong direction!");
+        }
+    }
+
+    @Override
+    public int getDirection() {
+        return this.direction;
     }
 }

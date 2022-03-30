@@ -1,7 +1,14 @@
 package sk.uniza.fri.game.entities.player;
 
+import sk.uniza.fri.engine.window.KeyboardListener;
 import sk.uniza.fri.game.GameFrame;
 import sk.uniza.fri.game.entities.Entity;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -11,12 +18,19 @@ import sk.uniza.fri.game.entities.Entity;
 public class Player extends Entity {
 
     private final GameFrame gameFrame;
+    private final KeyboardListener keyListener;
 
     private boolean isMoving;
 
-    public Player(GameFrame gameFrame) {
+    private BufferedImage test;
+
+    public Player(GameFrame gameFrame, KeyboardListener keyListener) {
         this.gameFrame = gameFrame;
+        this.keyListener = keyListener;
         this.isMoving = false;
+        this.getImage();
+        this.setDirection(1);
+        this.setDefaultTile(3, 3);
     }
 
     public void setDefaultTile (int rowTile, int colTile) {
@@ -24,18 +38,48 @@ public class Player extends Entity {
         this.setY(this.gameFrame.getTileY(colTile));
     }
 
+    public void getImage () {
+        try {
+            this.test = ImageIO.read(new File("sprites/head/head_1.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void update () {
+        if (this.keyListener.isUp() && !this.isMoving) {
+            this.setDirection(0);
+            this.move(0);
+        } else if (this.keyListener.isDown() && !this.isMoving) {
+            this.setDirection(1);
+            this.move(1);
+        } else if (this.keyListener.isLeft() && !this.isMoving) {
+            this.setDirection(2);
+            this.move(2);
+        } else if (this.keyListener.isRight() && !this.isMoving) {
+            this.setDirection(3);
+            this.move(3);
+        }
 
     }
 
-    public void paintComponent () {
+    public void paintComponent (Graphics2D g2) {
+        BufferedImage image = null;
+
+        switch (this.getDirection()) {
+            case 0 -> image = this.test;
+            default -> image = this.test;
+        }
+
+        g2.drawImage(image, this.getX(),this.getY(),
+                this.gameFrame.getFinalTileSize(), this.gameFrame.getFinalTileSize(), null);
 
     }
 
-    private void move (String where) {
+    private void move (int where) {
         int milisecondsToWait = 200;
 
-        Thread waitUp = new Thread(() -> {
+        Thread waitMove = new Thread(() -> {
             this.isMoving = true;
             int x = 0;
             while (x < this.gameFrame.getFinalTileSize()) {
@@ -45,10 +89,10 @@ public class Player extends Entity {
                     e.printStackTrace();
                 }
                 switch (where) {
-                    case "up" -> this.setX(this.getX() - 1);
-                    case "down" -> this.setX(this.getX() + 1);
-                    case "left" -> this.setY(this.getY() - 1);
-                    case "right" -> this.setY(this.getY() + 1);
+                    case 0 -> this.setX(this.getX() - 1);
+                    case 1 -> this.setX(this.getX() + 1);
+                    case 2 -> this.setY(this.getY() - 1);
+                    case 3 -> this.setY(this.getY() + 1);
                 }
 
                 x++;
@@ -56,7 +100,7 @@ public class Player extends Entity {
             this.isMoving = false;
         });
 
-        waitUp.start();
+        waitMove.start();
     }
 
 }

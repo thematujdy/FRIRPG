@@ -10,4 +10,6 @@ public interface IEntity {
     int getY();
     void setX(int x);
     void setY(int y);
+    void setDirection(int direction);
+    int getDirection();
 }
