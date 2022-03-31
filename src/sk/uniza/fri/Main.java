@@ -15,8 +15,10 @@ public class Main {
         int tileMultiplicator = 1;
         int colTiles = 16;
         int rowTiles = 12;
+        String name = "FRIRPG";
 
-        Window window = new Window();
-        window.startGameFrame(tilePixels, tileMultiplicator, colTiles, rowTiles);
+        Window window = new Window(tilePixels, tileMultiplicator, colTiles, rowTiles, name);
+        //window.startGameFrame();
+        window.goToCharCreator();
     }
 }

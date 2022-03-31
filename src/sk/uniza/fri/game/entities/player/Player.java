@@ -77,14 +77,14 @@ public class Player extends Entity {
     }
 
     private void move (int where) {
-        int milisecondsToWait = 200;
+        int waitTime = 200;
 
         Thread waitMove = new Thread(() -> {
             this.isMoving = true;
             int x = 0;
             while (x < this.gameFrame.getFinalTileSize()) {
                 try {
-                    Thread.sleep(milisecondsToWait / this.gameFrame.getFinalTileSize());
+                    Thread.sleep(waitTime / this.gameFrame.getFinalTileSize());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

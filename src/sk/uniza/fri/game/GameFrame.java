@@ -1,6 +1,7 @@
 package sk.uniza.fri.game;
 
 import sk.uniza.fri.engine.window.KeyManager;
+import sk.uniza.fri.engine.window.Window;
 import sk.uniza.fri.game.entities.player.Player;
 
 import javax.swing.JPanel;
@@ -20,26 +21,31 @@ public class GameFrame extends JPanel implements Runnable {
 
     private Thread gameThread;
 
+    private final Player player;
+
     private final KeyManager keyListener;
 
-    private Player player;
+    private final Window window;
 
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, KeyManager keyListener) {
+    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles,
+                     KeyManager keyListener, Window window) {
+        this.window = window;
+
         this.finalTileSize = graphicTileSize * multiplicator;
 
-        final int frameWidth = this.finalTileSize * maxColTiles;
-        final int frameHeight = this.finalTileSize * maxRowTiles;
+        int frameWidth = this.finalTileSize * maxColTiles;
+        int frameHeight = this.finalTileSize * maxRowTiles;
 
         this.setPreferredSize(new Dimension(frameWidth, frameHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
 
         this.keyListener = keyListener;
-        this.addKeyListener(this.keyListener);
+        this.addKeyListener(keyListener);
 
         this.setFocusable(true);
 
-        this.player = new Player(this, this.keyListener);
+        this.player = new Player(this, keyListener);
     }
 
     public int getFinalTileSize () {
@@ -52,6 +58,10 @@ public class GameFrame extends JPanel implements Runnable {
 
     public int getTileY (int colTile) {
         return (colTile * this.finalTileSize) - this.finalTileSize;
+    }
+
+    private void stopGame () {
+        this.gameThread = null;
     }
 
     public void startGame () {
@@ -93,6 +103,10 @@ public class GameFrame extends JPanel implements Runnable {
     }
 
     public void update () {
+        if (this.keyListener.isExit()) {
+            this.window.goToCharCreator();
+            this.stopGame();
+        }
         this.player.update();
     }
 
