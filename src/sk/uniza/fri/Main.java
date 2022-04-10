@@ -18,7 +18,5 @@ public class Main {
         String name = "FRIRPG";
 
         Window window = new Window(tilePixels, tileMultiplicator, colTiles, rowTiles, name);
-        //window.startGameFrame();
-        window.goToCharCreator();
     }
 }

@@ -40,7 +40,7 @@ public class Player extends Entity {
 
     public void getImage () {
         try {
-            this.test = ImageIO.read(new File("sprites/head/head_1.png"));
+            this.test = ImageIO.read(new File("sprites/head/head_2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,16 +49,16 @@ public class Player extends Entity {
     public void update () {
         if (this.keyListener.isUp() && !this.isMoving) {
             this.setDirection(0);
-            this.move(0);
+            this.move();
         } else if (this.keyListener.isDown() && !this.isMoving) {
             this.setDirection(1);
-            this.move(1);
+            this.move();
         } else if (this.keyListener.isLeft() && !this.isMoving) {
             this.setDirection(2);
-            this.move(2);
+            this.move();
         } else if (this.keyListener.isRight() && !this.isMoving) {
             this.setDirection(3);
-            this.move(3);
+            this.move();
         }
 
     }
@@ -76,7 +76,7 @@ public class Player extends Entity {
 
     }
 
-    private void move (int where) {
+    private void move () {
         int waitTime = 200;
 
         Thread waitMove = new Thread(() -> {
@@ -88,7 +88,7 @@ public class Player extends Entity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                switch (where) {
+                switch (this.getDirection()) {
                     case 2 -> this.setX(this.getX() - 1);
                     case 3 -> this.setX(this.getX() + 1);
                     case 0 -> this.setY(this.getY() - 1);

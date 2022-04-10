@@ -35,44 +35,42 @@ public class Window {
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setLocationRelativeTo(null);
         this.window.setResizable(false);
-        this.window.setLocationRelativeTo(null);
         this.window.setVisible(true);
 
         this.keyManager = new KeyManager();
 
-        this.scene = null;
+        this.goToCharCreator();
+
+        this.window.setLocationRelativeTo(null);
 
         this.window.addKeyListener(this.keyManager);
     }
 
     public void startGameFrame () {
-        this.changeScene();
+        this.disposeScene();
         this.scene = new GameFrame(this.graphicTileSize, this.multiplicator,
                 this.maxColTiles, this.maxRowTiles, this.keyManager, this);
 
         this.window.add(this.scene);
         this.window.pack();
-        this.window.setLocationRelativeTo(null);
 
         GameFrame gameFrame = (GameFrame)this.scene;
         gameFrame.startGame();
     }
 
     public void goToCharCreator () {
-        this.changeScene();
+        this.disposeScene();
         this.scene = new CharacterCreator(this.graphicTileSize * this.multiplicator * this.maxColTiles,
                 this.graphicTileSize * this.multiplicator * this.maxRowTiles,
                 this);
 
         this.window.add(this.scene);
         this.window.pack();
-        this.window.setLocationRelativeTo(null);
     }
 
-    private void changeScene () {
+    private void disposeScene () {
         if (this.scene != null) {
             this.window.remove(this.scene);
         }
     }
-
 }
