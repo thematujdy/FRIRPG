@@ -1,5 +1,6 @@
 package sk.uniza.fri.engine.window;
 
+import sk.uniza.fri.engine.menu.Menu;
 import sk.uniza.fri.game.GameFrame;
 import sk.uniza.fri.game.characterCreator.CharacterCreator;
 
@@ -39,18 +40,24 @@ public class Window {
 
         this.keyManager = new KeyManager();
 
-        this.goToCharCreator();
+        this.goToMenu();
 
         this.window.setLocationRelativeTo(null);
 
         this.window.addKeyListener(this.keyManager);
     }
 
-    public void startGameFrame () {
+    public void startGameFrame (boolean load) {
         this.disposeScene();
         this.scene = new GameFrame(this.graphicTileSize, this.multiplicator,
                 this.maxColTiles, this.maxRowTiles, this.keyManager, this);
-
+        if (load) {
+            GameFrame gameFrame = (GameFrame)this.scene;
+            gameFrame.loadGame();
+        } else {
+            GameFrame gameFrame = (GameFrame)this.scene;
+            gameFrame.newGame();
+        }
         this.window.add(this.scene);
         this.window.pack();
 
@@ -64,6 +71,15 @@ public class Window {
                 this.graphicTileSize * this.multiplicator * this.maxRowTiles,
                 this);
 
+        this.window.add(this.scene);
+        this.window.pack();
+    }
+
+    public void goToMenu () {
+        this.disposeScene();
+        this.scene = new Menu(this.graphicTileSize * this.multiplicator * this.maxColTiles,
+                this.graphicTileSize * this.multiplicator * this.maxRowTiles,
+                this);
         this.window.add(this.scene);
         this.window.pack();
     }

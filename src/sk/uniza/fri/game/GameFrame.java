@@ -2,6 +2,7 @@ package sk.uniza.fri.game;
 
 import sk.uniza.fri.engine.window.KeyManager;
 import sk.uniza.fri.engine.window.Window;
+import sk.uniza.fri.game.entities.IEntity;
 import sk.uniza.fri.game.entities.player.Player;
 
 import javax.swing.JPanel;
@@ -9,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -21,15 +23,17 @@ public class GameFrame extends JPanel implements Runnable {
 
     private Thread gameThread;
 
-    private final Player player;
-
     private final KeyManager keyListener;
 
     private final Window window;
 
+    private ArrayList<IEntity> entities;
+
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles,
                      KeyManager keyListener, Window window) {
         this.window = window;
+
+        this.entities = new ArrayList<>();
 
         this.finalTileSize = graphicTileSize * multiplicator;
 
@@ -45,7 +49,14 @@ public class GameFrame extends JPanel implements Runnable {
 
         this.setFocusable(true);
 
-        this.player = new Player(this, keyListener);
+    }
+
+    public void newGame () {
+        this.entities.add(new Player(this, this.keyListener));
+    }
+
+    public void loadGame () {
+
     }
 
     public int getFinalTileSize () {
@@ -104,10 +115,14 @@ public class GameFrame extends JPanel implements Runnable {
 
     public void update () {
         if (this.keyListener.isExit()) {
-            this.window.goToCharCreator();
+            this.window.goToMenu();
             this.stopGame();
         }
-        this.player.update();
+        for (IEntity entity : this.entities) {
+            if (entity instanceof IUpdatable updatable) {
+                updatable.update();
+            }
+        }
     }
 
     public void paintComponent (Graphics graphics) {
@@ -116,7 +131,11 @@ public class GameFrame extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
 
-        this.player.paintComponent(graphics2D);
+        for (IEntity entity : this.entities) {
+            if (entity instanceof IUpdatable updatable) {
+                updatable.paintComponent(graphics2D);
+            }
+        }
 
         graphics2D.dispose();
     }

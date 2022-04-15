@@ -11,9 +11,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -38,10 +42,13 @@ public class CharacterCreator extends JPanel {
     private final int legsCount;
     private final JLabel legsLabel;
 
+    private ArrayList<Byte> saveBytes;
+
     public CharacterCreator (int width, int height, Window window) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.WHITE);
         this.setFocusable(false);
+        this.saveBytes = new ArrayList<>();
 
         File hairDir = new File("sprites/hair");
         this.hairCount = Objects.requireNonNull(hairDir.listFiles()).length;
@@ -62,6 +69,12 @@ public class CharacterCreator extends JPanel {
         //this.setLayout(new GridLayout());
 
         //JTextField textField = new JTextField(20);
+
+        //menu button
+        Button menuButton = new Button("Menu");
+        menuButton.setFocusable(false);
+        menuButton.addActionListener(a -> window.goToMenu());
+        this.add(menuButton);
 
         /**
          * hair choosing
@@ -188,18 +201,32 @@ public class CharacterCreator extends JPanel {
         legsNext.setFocusable(false);
         this.add(legsNext);
 
-        //save button
+        /**
+         * save button
+         */
         Button save = new Button("Save Character");
         save.setFocusable(false);
         save.addActionListener(a -> {
-            try {
-                FileWriter newSave = new FileWriter("saves/test.frisave");
-                newSave.write("test");
-                newSave.close();
-            } catch (IOException e) {
+            File saveFile = new File("saves/test.frisave");
+            Checksum generator = new CRC32();
+            try (FileOutputStream outputStream = new FileOutputStream(saveFile)) {
+                this.saveBytes.add((byte)this.currHair);
+                this.saveBytes.add((byte)this.currHead);
+                this.saveBytes.add((byte)this.currBody);
+                this.saveBytes.add((byte)this.currLegs);
+                generator.update(this.saveBytes.get(0));
+                generator.update(this.saveBytes.get(1));
+                generator.update(this.saveBytes.get(2));
+                generator.update(this.saveBytes.get(3));
+                byte[] bufferedBytes = ByteBuffer.allocate(4).putInt((int)(generator.getValue() % 65535)).array();
+                outputStream.write(bufferedBytes , 0, bufferedBytes.length);
+                for (Byte saveByte:this.saveBytes) {
+                    outputStream.write(saveByte);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            window.startGameFrame();
+            window.startGameFrame(false);
         });
 
         //this.add(textField);

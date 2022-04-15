@@ -2,6 +2,7 @@ package sk.uniza.fri.game.entities.player;
 
 import sk.uniza.fri.engine.window.KeyManager;
 import sk.uniza.fri.game.GameFrame;
+import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.Entity;
 
 import javax.imageio.ImageIO;
@@ -15,7 +16,7 @@ import java.io.IOException;
  *
  * @author matus
  */
-public class Player extends Entity {
+public class Player extends Entity  implements IUpdatable {
 
     private final GameFrame gameFrame;
     private final KeyManager keyListener;
@@ -46,6 +47,7 @@ public class Player extends Entity {
         }
     }
 
+    @Override
     public void update () {
         if (this.keyListener.isUp() && !this.isMoving) {
             this.setDirection(0);
@@ -63,6 +65,7 @@ public class Player extends Entity {
 
     }
 
+    @Override
     public void paintComponent (Graphics2D g2) {
         BufferedImage image = null;
 
