@@ -21,18 +21,16 @@ import java.io.File;
  */
 public class Menu extends JPanel {
 
-    private boolean isMusic;
     private Icon musicon;
     private Icon musicoff;
 
-    public Menu (int width, int height, Window window) {
+    public Menu (int width, int height, Window window, MusicPlayer musicPlayer) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.WHITE);
         this.setFocusable(false);
         this.setLayout(null);
         int buttonWidth = 100;
         int buttonHeight = 50;
-        this.isMusic = true;
 
         Button newGameButton = new Button("New Game");
         newGameButton.setFocusable(false);
@@ -64,7 +62,7 @@ public class Menu extends JPanel {
         exitButton.setBounds(width / 2 - buttonWidth / 2, 300, buttonWidth, buttonHeight);
         this.add(exitButton);
 
-        MusicPlayer musicPlayer = new MusicPlayer();
+
         try {
             Image musiconimg = ImageIO.read(new File("icons/soundon.png"));
             this.musicon = new ImageIcon(musiconimg);
@@ -76,15 +74,19 @@ public class Menu extends JPanel {
 
         JButton musicButton = new JButton();
         musicButton.setFocusable(false);
-        musicButton.setIcon(this.musicon);
+        if (window.getMusic()) {
+            musicButton.setIcon(this.musicon);
+        } else {
+            musicButton.setIcon(this.musicoff);
+        }
         musicButton.setBackground(Color.WHITE);
         musicButton.addActionListener(a -> {
-            if (this.isMusic) {
-                this.isMusic = false;
+            if (window.getMusic()) {
+                window.setMusic(false);
                 musicPlayer.stop();
                 musicButton.setIcon(this.musicoff);
             } else {
-                this.isMusic = true;
+                window.setMusic(true);
                 musicPlayer.start();
                 musicButton.setIcon(this.musicon);
             }

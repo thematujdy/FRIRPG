@@ -1,6 +1,7 @@
 package sk.uniza.fri.engine.window;
 
 import sk.uniza.fri.engine.menu.Menu;
+import sk.uniza.fri.engine.sound.MusicPlayer;
 import sk.uniza.fri.game.GameFrame;
 import sk.uniza.fri.game.characterCreator.CharacterCreator;
 
@@ -18,6 +19,8 @@ public class Window {
     private final KeyManager keyManager;
     private final JFrame window;
     private JPanel scene;
+    private MusicPlayer musicPlayer;
+    private boolean music;
 
     private final int graphicTileSize;
     private final int multiplicator;
@@ -25,6 +28,9 @@ public class Window {
     private final int maxRowTiles;
 
     public Window (int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, String name) {
+
+        this.musicPlayer = new MusicPlayer();
+        this.music = true;
 
         this.graphicTileSize = graphicTileSize;
         this.multiplicator = multiplicator;
@@ -77,7 +83,7 @@ public class Window {
         this.disposeScene();
         this.scene = new Menu(this.graphicTileSize * this.multiplicator * this.maxColTiles,
                 this.graphicTileSize * this.multiplicator * this.maxRowTiles,
-                this);
+                this, this.musicPlayer);
         this.window.add(this.scene);
         this.window.pack();
     }
@@ -86,5 +92,13 @@ public class Window {
         if (this.scene != null) {
             this.window.remove(this.scene);
         }
+    }
+
+    public boolean getMusic() {
+        return this.music;
+    }
+
+    public void setMusic(boolean m) {
+        this.music = m;
     }
 }
