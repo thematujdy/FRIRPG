@@ -138,7 +138,6 @@ public class GameFrame extends JPanel implements Runnable {
                 this.pauseCount = 100;
                 Thread pause = new Thread(() -> {
                     this.paused = !this.paused;
-                    System.out.println(this.paused);
                     while (this.pauseCount != 0) {
                         try {
                             Thread.sleep(1);
@@ -159,16 +158,14 @@ public class GameFrame extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
 
-        if (!this.paused) {
-            for (IEntity entity : this.entities) {
-                if (entity instanceof IUpdatable updatable) {
-                    updatable.paintComponent(graphics2D);
-                }
+        for (IEntity entity : this.entities) {
+            if (entity instanceof IUpdatable updatable) {
+                updatable.paintComponent(graphics2D);
             }
         }
 
         if (this.paused) {
-            Frame f = new Frame(584, 680, 20, 20);
+            Frame f = new Frame(584, 680 / 2, 360, 20, "PAUSED");
             f.paintComponent(graphics2D);
         }
 
