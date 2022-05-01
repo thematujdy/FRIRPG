@@ -13,8 +13,8 @@ public class Main {
     public static void main(String[] args) {
         int tilePixels = 48;
         int tileMultiplicator = 1;
-        int colTiles = 16;
-        int rowTiles = 12;
+        int colTiles = 15;
+        int rowTiles = 13;
         String name = "FRIRPG";
 
         Window window = new Window(tilePixels, tileMultiplicator, colTiles, rowTiles, name);

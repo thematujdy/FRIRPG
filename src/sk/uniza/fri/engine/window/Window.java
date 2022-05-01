@@ -51,17 +51,15 @@ public class Window {
         this.disposeScene();
         this.scene = new GameFrame(this.graphicTileSize, this.multiplicator,
                 this.maxColTiles, this.maxRowTiles, this.keyManager, this);
+        GameFrame gameFrame = (GameFrame)this.scene;
         if (load) {
-            GameFrame gameFrame = (GameFrame)this.scene;
             gameFrame.loadGame();
         } else {
-            GameFrame gameFrame = (GameFrame)this.scene;
             gameFrame.newGame();
         }
         this.window.add(this.scene);
         this.window.pack();
 
-        GameFrame gameFrame = (GameFrame)this.scene;
         gameFrame.startGame();
     }
 

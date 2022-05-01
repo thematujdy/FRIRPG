@@ -29,6 +29,9 @@ public class GameFrame extends JPanel implements Runnable {
 
     private ArrayList<IEntity> entities;
 
+    private boolean paused;
+    private int pauseCount;
+
     public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles,
                      KeyManager keyListener, Window window) {
         this.window = window;
@@ -48,6 +51,8 @@ public class GameFrame extends JPanel implements Runnable {
         this.addKeyListener(keyListener);
 
         this.setFocusable(true);
+        this.paused = false;
+        this.pauseCount = 0;
 
     }
 
@@ -78,6 +83,7 @@ public class GameFrame extends JPanel implements Runnable {
     public void startGame () {
         this.gameThread = new Thread(this);
         this.gameThread.start();
+        this.paused = false;
     }
 
     @Override
@@ -98,7 +104,10 @@ public class GameFrame extends JPanel implements Runnable {
             prevTime = curTime;
 
             if (delta >= 1) {
-                this.update();
+                this.keyListening();
+                if (!this.paused) {
+                    this.update();
+                }
                 this.repaint();
                 delta--;
                 count++;
@@ -109,18 +118,37 @@ public class GameFrame extends JPanel implements Runnable {
                 count = 0;
                 timer = 0;
             }
+
+
         }
 
     }
 
     public void update () {
-        if (this.keyListener.isExit()) {
-            this.window.goToMenu();
-            this.stopGame();
-        }
         for (IEntity entity : this.entities) {
             if (entity instanceof IUpdatable updatable) {
                 updatable.update();
+            }
+        }
+    }
+
+    public void keyListening() {
+        if (this.keyListener.isExit()) {
+            if (this.pauseCount == 0) {
+                this.pauseCount = 100;
+                Thread pause = new Thread(() -> {
+                    this.paused = !this.paused;
+                    System.out.println(this.paused);
+                    while (this.pauseCount != 0) {
+                        try {
+                            Thread.sleep(1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        this.pauseCount--;
+                    }
+                });
+                pause.start();
             }
         }
     }
@@ -131,10 +159,17 @@ public class GameFrame extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.WHITE);
 
-        for (IEntity entity : this.entities) {
-            if (entity instanceof IUpdatable updatable) {
-                updatable.paintComponent(graphics2D);
+        if (!this.paused) {
+            for (IEntity entity : this.entities) {
+                if (entity instanceof IUpdatable updatable) {
+                    updatable.paintComponent(graphics2D);
+                }
             }
+        }
+
+        if (this.paused) {
+            Frame f = new Frame(584, 680, 20, 20);
+            f.paintComponent(graphics2D);
         }
 
         graphics2D.dispose();

@@ -19,8 +19,7 @@ public class MusicPlayer {
             try {
                 this.clip = AudioSystem.getClip();
                 this.clip.open(AudioSystem.getAudioInputStream(music));
-                this.clip.start();
-                this.clip.loop(Clip.LOOP_CONTINUOUSLY);
+                this.start();
             } catch (Exception e) {
                 e.printStackTrace();
             }
