@@ -8,6 +8,10 @@ import sk.uniza.fri.game.characterCreator.CharacterCreator;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.util.Properties;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -19,21 +23,39 @@ public class Window {
     private final KeyManager keyManager;
     private final JFrame window;
     private JPanel scene;
-    private MusicPlayer musicPlayer;
+    private final MusicPlayer musicPlayer;
     private boolean music;
 
     private final int graphicTileSize;
-    private final int multiplicator;
     private final int maxColTiles;
     private final int maxRowTiles;
 
-    public Window (int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles, String name) {
+    private final Properties prop;
+
+    public Window (int graphicTileSize, int maxColTiles, int maxRowTiles, String name) {
+        this.prop = new Properties();
+        try (FileInputStream fis = new FileInputStream("frirpg.config")) {
+            this.prop.load(fis);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         this.musicPlayer = new MusicPlayer();
-        this.music = true;
+        this.music = Integer.parseInt(this.prop.get("frirpg.music").toString()) == 1;
+
+        try {
+            Thread.sleep(200);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!this.music) {
+            this.musicPlayer.stop();
+        } else {
+            this.musicPlayer.start();
+        }
 
         this.graphicTileSize = graphicTileSize;
-        this.multiplicator = multiplicator;
         this.maxColTiles = maxColTiles;
         this.maxRowTiles = maxRowTiles;
 
@@ -55,8 +77,8 @@ public class Window {
 
     public void startGameFrame (boolean load) {
         this.disposeScene();
-        this.scene = new GameFrame(this.graphicTileSize, this.multiplicator,
-                this.maxColTiles, this.maxRowTiles, this.keyManager, this);
+        this.scene = new GameFrame(this.graphicTileSize, this.maxColTiles,
+                this.maxRowTiles, this.keyManager, this);
         GameFrame gameFrame = (GameFrame)this.scene;
         if (load) {
             gameFrame.loadGame();
@@ -71,8 +93,8 @@ public class Window {
 
     public void goToCharCreator () {
         this.disposeScene();
-        this.scene = new CharacterCreator(this.graphicTileSize * this.multiplicator * this.maxColTiles,
-                this.graphicTileSize * this.multiplicator * this.maxRowTiles,
+        this.scene = new CharacterCreator(this.graphicTileSize * this.maxColTiles,
+                this.graphicTileSize * this.maxRowTiles,
                 this);
 
         this.window.add(this.scene);
@@ -81,9 +103,9 @@ public class Window {
 
     public void goToMenu () {
         this.disposeScene();
-        this.scene = new Menu(this.graphicTileSize * this.multiplicator * this.maxColTiles,
-                this.graphicTileSize * this.multiplicator * this.maxRowTiles,
-                this, this.musicPlayer);
+        this.scene = new Menu(this.graphicTileSize * this.maxColTiles,
+                this.graphicTileSize * this.maxRowTiles,
+                this, this.musicPlayer, this.prop);
         this.window.add(this.scene);
         this.window.pack();
     }
@@ -100,5 +122,15 @@ public class Window {
 
     public void setMusic(boolean m) {
         this.music = m;
+    }
+
+    public void saveCfg() {
+        try {
+            FileWriter writer = new FileWriter(new File("frirpg.config"));
+            this.prop.store(writer, "");
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

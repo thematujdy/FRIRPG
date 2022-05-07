@@ -32,13 +32,13 @@ public class GameFrame extends JPanel implements Runnable {
     private boolean paused;
     private int pauseCount;
 
-    public GameFrame(int graphicTileSize, int multiplicator, int maxColTiles, int maxRowTiles,
+    public GameFrame(int graphicTileSize, int maxColTiles, int maxRowTiles,
                      KeyManager keyListener, Window window) {
         this.window = window;
 
         this.entities = new ArrayList<>();
 
-        this.finalTileSize = graphicTileSize * multiplicator;
+        this.finalTileSize = graphicTileSize;
 
         int frameWidth = this.finalTileSize * maxColTiles;
         int frameHeight = this.finalTileSize * maxRowTiles;
@@ -114,7 +114,7 @@ public class GameFrame extends JPanel implements Runnable {
             }
 
             if (timer >= 1000000000) {
-                System.out.println("FPS:" + count);
+                System.out.println("FPS: " + count);
                 count = 0;
                 timer = 0;
             }

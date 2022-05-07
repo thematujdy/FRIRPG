@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
+import java.util.Properties;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -24,7 +25,7 @@ public class Menu extends JPanel {
     private Icon musicon;
     private Icon musicoff;
 
-    public Menu (int width, int height, Window window, MusicPlayer musicPlayer) {
+    public Menu (int width, int height, Window window, MusicPlayer musicPlayer, Properties prop) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.WHITE);
         this.setFocusable(false);
@@ -85,10 +86,14 @@ public class Menu extends JPanel {
                 window.setMusic(false);
                 musicPlayer.stop();
                 musicButton.setIcon(this.musicoff);
+                prop.setProperty("frirpg.music", "0");
+                window.saveCfg();
             } else {
                 window.setMusic(true);
                 musicPlayer.start();
                 musicButton.setIcon(this.musicon);
+                prop.setProperty("frirpg.music", "1");
+                window.saveCfg();
             }
         });
         musicButton.setBounds(width - 1 - 40, 1, 40, 40);

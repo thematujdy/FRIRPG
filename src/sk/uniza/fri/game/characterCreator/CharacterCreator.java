@@ -32,7 +32,7 @@ public class CharacterCreator extends JPanel {
 
     private int currHead;
     private final int headCount;
-    private final JLabel headLabel;
+    private JLabel headLabel;
 
     private int currBody;
     private final int bodyCount;
@@ -48,6 +48,7 @@ public class CharacterCreator extends JPanel {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.WHITE);
         this.setFocusable(false);
+        this.setLayout(null);
         this.saveBytes = new ArrayList<>();
 
         File hairDir = new File("sprites/hair");
@@ -89,10 +90,12 @@ public class CharacterCreator extends JPanel {
             this.changeHair();
         });
         hairPrev.setFocusable(false);
+        hairPrev.setBounds(width - 108, 50, 20, 20);
         this.add(hairPrev);
 
         this.hairLabel = new JLabel();
         this.changeHair();
+        this.hairLabel.setBounds(width - 78, 50, 48, 48);
         this.add(this.hairLabel);
 
 
@@ -105,6 +108,7 @@ public class CharacterCreator extends JPanel {
             }
             this.changeHair();
         });
+        hairNext.setBounds(width - 20, 50, 20, 20);
         hairNext.setFocusable(false);
         this.add(hairNext);
 
@@ -121,10 +125,12 @@ public class CharacterCreator extends JPanel {
             this.changeHead();
         });
         headPrev.setFocusable(false);
+        headPrev.setBounds(width - 108, 100, 20, 20);
         this.add(headPrev);
 
         this.headLabel = new JLabel();
         this.changeHead();
+        this.headLabel.setBounds(width - 78, 100, 48, 48);
         this.add(this.headLabel);
 
         Button headNext = new Button(">");
@@ -137,6 +143,7 @@ public class CharacterCreator extends JPanel {
             this.changeHead();
         });
         headNext.setFocusable(false);
+        headNext.setBounds(width - 20, 100, 20, 20);
         this.add(headNext);
 
         /**
@@ -152,10 +159,12 @@ public class CharacterCreator extends JPanel {
             this.changeBody();
         });
         bodyPrev.setFocusable(false);
+        bodyPrev.setBounds(width - 108, 150, 20, 20);
         this.add(bodyPrev);
 
         this.bodyLabel = new JLabel();
         this.changeBody();
+        this.bodyLabel.setBounds(width - 78, 150, 48, 48);
         this.add(this.bodyLabel);
 
         Button bodyNext = new Button(">");
@@ -168,6 +177,7 @@ public class CharacterCreator extends JPanel {
             this.changeBody();
         });
         bodyNext.setFocusable(false);
+        bodyNext.setBounds(width - 20, 150, 20, 20);
         this.add(bodyNext);
 
         /**
@@ -183,10 +193,12 @@ public class CharacterCreator extends JPanel {
             this.changeLegs();
         });
         legsPrev.setFocusable(false);
+        legsPrev.setBounds(width - 108, 200, 20, 20);
         this.add(legsPrev);
 
         this.legsLabel = new JLabel();
         this.changeLegs();
+        this.legsLabel.setBounds(width - 78, 200, 48, 48);
         this.add(this.legsLabel);
 
         Button legsNext = new Button(">");
@@ -199,12 +211,14 @@ public class CharacterCreator extends JPanel {
             this.changeLegs();
         });
         legsNext.setFocusable(false);
+        legsNext.setBounds(width - 20, 200, 20, 20);
         this.add(legsNext);
 
         /**
          * save button
          */
         Button save = new Button("Save Character");
+        save.setBounds(width - 100, height - 50, 100, 50);
         save.setFocusable(false);
         save.addActionListener(a -> {
             File saveFile = new File("saves/test.frisave");
