@@ -1,6 +1,7 @@
 package sk.uniza.fri.game;
 
 import sk.uniza.fri.engine.window.KeyManager;
+import sk.uniza.fri.engine.window.MusicButton;
 import sk.uniza.fri.engine.window.Window;
 import sk.uniza.fri.game.entities.IEntity;
 import sk.uniza.fri.game.entities.player.Player;
@@ -34,6 +35,8 @@ public class GameFrame extends JPanel implements Runnable {
 
     public GameFrame(int graphicTileSize, int maxColTiles, int maxRowTiles,
                      KeyManager keyListener, Window window) {
+        this.setLayout(null);
+
         this.window = window;
 
         this.entities = new ArrayList<>();
@@ -53,7 +56,6 @@ public class GameFrame extends JPanel implements Runnable {
         this.setFocusable(true);
         this.paused = false;
         this.pauseCount = 0;
-
     }
 
     public void newGame () {
@@ -167,6 +169,11 @@ public class GameFrame extends JPanel implements Runnable {
         if (this.paused) {
             Frame f = new Frame(584, 680 / 2, 360, 20, "PAUSED");
             f.paintComponent(graphics2D);
+            /*
+            MusicButton musicButton = new MusicButton(this.window, this.window.getMusicPlayer(), this.window.getConfig());
+            musicButton.setBounds(0, 0, 50, 50);
+            this.add(musicButton.getMusicButton());
+             */
         }
 
         graphics2D.dispose();

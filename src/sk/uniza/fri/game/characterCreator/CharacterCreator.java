@@ -75,6 +75,7 @@ public class CharacterCreator extends JPanel {
         Button menuButton = new Button("Menu");
         menuButton.setFocusable(false);
         menuButton.addActionListener(a -> window.goToMenu());
+        menuButton.setBounds(0, 0, 100, 50);
         this.add(menuButton);
 
         /**

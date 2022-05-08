@@ -41,10 +41,16 @@ public class Window {
         }
 
         this.musicPlayer = new MusicPlayer();
-        this.music = Integer.parseInt(this.prop.get("frirpg.music").toString()) == 1;
+        try {
+            this.music = Integer.parseInt(this.prop.get("music").toString()) == 1;
+        } catch (Exception e) {
+            this.prop.setProperty("music", "1");
+            e.printStackTrace();
+        }
+
 
         try {
-            Thread.sleep(200);
+            Thread.sleep(2000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,5 +138,13 @@ public class Window {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Properties getConfig() {
+        return this.prop;
+    }
+
+    public MusicPlayer getMusicPlayer() {
+        return this.musicPlayer;
     }
 }
