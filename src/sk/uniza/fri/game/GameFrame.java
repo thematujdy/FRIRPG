@@ -33,6 +33,14 @@ public class GameFrame extends JPanel implements Runnable {
     private boolean paused;
     private int pauseCount;
 
+    /***
+     * prerob pomocou JLayeredPane
+     * @param graphicTileSize
+     * @param maxColTiles
+     * @param maxRowTiles
+     * @param keyListener
+     * @param window
+     */
     public GameFrame(int graphicTileSize, int maxColTiles, int maxRowTiles,
                      KeyManager keyListener, Window window) {
         this.setLayout(null);

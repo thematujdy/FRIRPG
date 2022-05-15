@@ -6,5 +6,5 @@ package sk.uniza.fri.game;
  * @author matus
  */
 public interface IInteractable {
-    boolean interaction();
+    boolean interact();
 }
