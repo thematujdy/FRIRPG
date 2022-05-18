@@ -1,12 +1,12 @@
 package sk.uniza.fri.game.entities.player;
 
 import sk.uniza.fri.engine.window.KeyManager;
-import sk.uniza.fri.game.GameFrame;
+import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.Entity;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,26 +18,25 @@ import java.io.IOException;
  */
 public class Player extends Entity  implements IUpdatable {
 
-    private final GameFrame gameFrame;
+    private final Game game;
     private final KeyManager keyListener;
 
     private boolean isMoving;
+    private JLabel label;
 
     private BufferedImage test;
 
-    public Player(GameFrame gameFrame, KeyManager keyListener) {
-        this.gameFrame = gameFrame;
+    public Player(Game game, KeyManager keyListener) {
+        this.game = game;
         this.keyListener = keyListener;
         this.isMoving = false;
         this.getImage();
         this.setDirection(1);
-        this.setDefaultTile(3, 3);
+        this.label = new JLabel();
+        game.getLayeredPane().add(this.label);
+        game.getLayeredPane().setLayer(this.label, 1);
     }
 
-    public void setDefaultTile (int rowTile, int colTile) {
-        this.setX(this.gameFrame.getTileX(rowTile));
-        this.setY(this.gameFrame.getTileY(colTile));
-    }
 
     public void getImage () {
         try {
@@ -66,17 +65,8 @@ public class Player extends Entity  implements IUpdatable {
     }
 
     @Override
-    public void paintComponent (Graphics2D g2) {
-        BufferedImage image = null;
-
-        switch (this.getDirection()) {
-            case 0 -> image = this.test;
-            default -> image = this.test;
-        }
-
-        g2.drawImage(image, this.getX(),this.getY(),
-                this.gameFrame.getFinalTileSize(), this.gameFrame.getFinalTileSize(), null);
-
+    public void repaint () {
+        this.label.setLocation(this.getX(), this.getY());
     }
 
     private void move () {
@@ -85,9 +75,9 @@ public class Player extends Entity  implements IUpdatable {
         Thread waitMove = new Thread(() -> {
             this.isMoving = true;
             int x = 0;
-            while (x < this.gameFrame.getFinalTileSize()) {
+            while (x < this.game.getTileSize()) {
                 try {
-                    Thread.sleep(waitTime / this.gameFrame.getFinalTileSize());
+                    Thread.sleep(waitTime / this.game.getTileSize());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

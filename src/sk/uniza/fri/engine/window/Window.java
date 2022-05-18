@@ -2,7 +2,7 @@ package sk.uniza.fri.engine.window;
 
 import sk.uniza.fri.engine.menu.Menu;
 import sk.uniza.fri.engine.sound.MusicPlayer;
-import sk.uniza.fri.game.GameFrame;
+import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.characterCreator.CharacterCreator;
 
 import javax.swing.ImageIcon;
@@ -83,18 +83,12 @@ public class Window {
 
     public void startGameFrame (boolean load) {
         this.disposeScene();
-        this.scene = new GameFrame(this.graphicTileSize, this.maxColTiles,
+        Game game = new Game(this.graphicTileSize, this.maxColTiles,
                 this.maxRowTiles, this.keyManager, this);
-        GameFrame gameFrame = (GameFrame)this.scene;
-        if (load) {
-            gameFrame.loadGame();
-        } else {
-            gameFrame.newGame();
-        }
+        this.scene = game.getGamePanel();
         this.window.add(this.scene);
         this.window.pack();
-
-        gameFrame.startGame();
+        game.startGame();
     }
 
     public void goToCharCreator () {

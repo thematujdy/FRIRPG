@@ -37,7 +37,7 @@ public class Frame extends JPanel {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.img = new BufferedImage(height, width, BufferedImage.TYPE_INT_RGB) ;
+        this.img = new BufferedImage(height, width, BufferedImage.TYPE_INT_RGB);
         this.g = this.img.createGraphics();
         this.g.setColor(Color.WHITE);
         this.g.drawRect(0, 0, height - 1, width - 1);
@@ -47,6 +47,10 @@ public class Frame extends JPanel {
 
     public void paintComponent(Graphics2D g) {
         g.drawImage(this.img, this.x, this.y, this.height, this.width, null);
+    }
+
+    public BufferedImage getFrame() {
+        return this.img;
     }
 
 }

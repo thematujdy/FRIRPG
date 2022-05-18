@@ -1,9 +1,6 @@
 package sk.uniza.fri.game.world.tile;
 
-import sk.uniza.fri.game.IUpdatable;
-import sk.uniza.fri.game.world.tile.ITile;
-
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
@@ -11,7 +8,7 @@ import java.awt.image.BufferedImage;
  *
  * @author matus
  */
-public class StandardTile implements ITile, IUpdatable {
+public class StandardTile implements ITile {
 
     private int tileID;
     private BufferedImage tileImg;
@@ -27,26 +24,37 @@ public class StandardTile implements ITile, IUpdatable {
         return this.tileID;
     }
 
+    @Override
+    public void setLocation(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public int getX() {
+        return this.x;
+    }
+
+    @Override
+    public int getY() {
+        return this.y;
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return this.tileImg;
+    }
+
+    @Override
+    public Graphics getGraphics() {
+        return this.tileImg.getGraphics();
+    }
+
     protected void setTileID(int id) {
         this.tileID = id;
     }
 
     protected void setTileImg(BufferedImage img) {
         this.tileImg = img;
-    }
-
-    protected void setLocation(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public void paintComponent(Graphics2D graphics2D) {
-        graphics2D.drawImage(this.tileImg, this.x, this.y, 48, 48, null);
     }
 }
