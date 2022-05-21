@@ -1,6 +1,7 @@
 package sk.uniza.fri.game.entities.player;
 
 import sk.uniza.fri.engine.window.KeyManager;
+import sk.uniza.fri.game.items.IItem;
 import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.Entity;
@@ -22,19 +23,24 @@ public class Player extends Entity  implements IUpdatable {
     private final KeyManager keyListener;
 
     private boolean isMoving;
-    private JLabel label;
+    private final JLabel label;
 
     private BufferedImage test;
 
+    private final DefaultListModel<IItem> inventory;
+
     public Player(Game game, KeyManager keyListener) {
+        this.setX(48);
+        this.setY(48);
         this.game = game;
         this.keyListener = keyListener;
         this.isMoving = false;
         this.getImage();
         this.setDirection(1);
         this.label = new JLabel();
-        game.getLayeredPane().add(this.label);
-        game.getLayeredPane().setLayer(this.label, 1);
+        this.label.setBounds(this.getX(), this.getY(), this.test.getWidth(), this.test.getHeight());
+        this.label.setIcon(new ImageIcon(this.test));
+        this.inventory = new DefaultListModel<>();
     }
 
 
@@ -69,6 +75,13 @@ public class Player extends Entity  implements IUpdatable {
         this.label.setLocation(this.getX(), this.getY());
     }
 
+    @Override
+    public void piantLabel(JLayeredPane layeredPane) {
+        this.label.setFocusable(false);
+        layeredPane.add(this.label);
+        layeredPane.setLayer(this.label, 1);
+    }
+
     private void move () {
         int waitTime = 200;
 
@@ -94,6 +107,14 @@ public class Player extends Entity  implements IUpdatable {
         });
 
         waitMove.start();
+    }
+
+    public JLabel getLabel() {
+        return this.label;
+    }
+
+    public DefaultListModel<IItem> getInventory() {
+        return this.inventory;
     }
 
 }

@@ -1,6 +1,5 @@
 package sk.uniza.fri.engine.window;
 
-import sk.uniza.fri.engine.sound.MusicButtonActionListener;
 import sk.uniza.fri.engine.sound.MusicPlayer;
 
 import javax.imageio.ImageIO;
@@ -41,8 +40,21 @@ public class MusicButton {
             this.musicButton.setIcon(this.musicoff);
         }
         this.musicButton.setBackground(Color.WHITE);
-        this.musicButton.addActionListener(new MusicButtonActionListener(window, musicPlayer, prop,
-                this.musicButton, this.musicon, this.musicoff));
+        this.musicButton.addActionListener(a -> {
+            if (window.getMusic()) {
+                window.setMusic(false);
+                musicPlayer.stop();
+                this.musicButton.setIcon(this.musicoff);
+                prop.setProperty("music", "0");
+                window.saveCfg();
+            } else {
+                window.setMusic(true);
+                musicPlayer.start();
+                this.musicButton.setIcon(this.musicon);
+                prop.setProperty("music", "1");
+                window.saveCfg();
+            }
+        });
     }
 
     public void setBounds (int x, int y, int width, int height) {

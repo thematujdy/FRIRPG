@@ -1,5 +1,7 @@
 package sk.uniza.fri.game;
 
+import javax.swing.JLayeredPane;
+
 /**
  * 12. 3. 2022 - 12:07
  *
@@ -8,4 +10,5 @@ package sk.uniza.fri.game;
 public interface IUpdatable {
     void update();
     void repaint();
+    void piantLabel(JLayeredPane layeredPane);
 }
