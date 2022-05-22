@@ -3,7 +3,6 @@ package sk.uniza.fri.game.items;
 import sk.uniza.fri.game.IInteractable;
 import sk.uniza.fri.game.entities.player.Player;
 import sk.uniza.fri.game.run.Game;
-import sk.uniza.fri.game.world.Room;
 import sk.uniza.fri.game.world.tile.ITile;
 
 /**
@@ -17,15 +16,15 @@ public class WoodenDoor extends StandardItem implements IInteractable {
 
     public WoodenDoor(ITile tile, Game game) {
         super(tile);
+        this.setName("Wooden Door");
         this.game = game;
+        this.setImg("textures/item/WoodenDoor.png");
     }
 
     @Override
     public boolean interact(Player player) {
-        this.removeFromTile();
-        Room room = this.game.getRoomGenerator().generateRoom(13, 15, 48, this.game);
-        this.game.setCurrRoom(room);
-        this.game.setPlayerCords(48, 48);
+        //this.removeFromTile();
+        this.game.generateRoom();
         return true;
     }
 }

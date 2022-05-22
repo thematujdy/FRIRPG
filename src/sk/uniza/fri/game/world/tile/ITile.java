@@ -19,4 +19,5 @@ public interface ITile {
     Graphics getGraphics();
     IItem getItem();
     void setItem(IItem item);
+    void removeItem();
 }

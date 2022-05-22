@@ -2,7 +2,6 @@ package sk.uniza.fri.game.entities.player;
 
 import sk.uniza.fri.engine.window.KeyManager;
 import sk.uniza.fri.game.IInteractable;
-import sk.uniza.fri.game.items.Bible;
 import sk.uniza.fri.game.items.IItem;
 import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.IUpdatable;
@@ -60,6 +59,12 @@ public class Player extends Entity  implements IUpdatable {
         this.interactingCount = 0;
     }
 
+    public void setCurrentTile(int x, int y) {
+        this.currRoom = this.game.getCurrentRoom();
+        this.currentTile = this.currRoom.getTile(x, y);
+        this.roomX = x;
+        this.roomY = y;
+    }
 
     public void getImage () {
         try {
@@ -110,15 +115,16 @@ public class Player extends Entity  implements IUpdatable {
             }
             ITile tile = this.currRoom.getTile(this.roomX + x, this.roomY + y);
             if (tile.getItem() instanceof IInteractable) {
+                tile.getItem().removeFromMap(this.game.getLayeredPane());
+                this.game.repaintCanvas();
                 if (((IInteractable) tile.getItem()).interact(this)) {
                     System.out.println("interacted");
+                    this.game.repaintLabels();
                 }
-            } else {
-                System.out.println("couldn't interact");
             }
             Thread pause = new Thread(() -> {
                 this.isInteracting = true;
-                this.interactingCount = 100;
+                this.interactingCount = 300;
                 while (this.interactingCount != 0) {
                     try {
                         Thread.sleep(1);
@@ -143,7 +149,12 @@ public class Player extends Entity  implements IUpdatable {
     public void piantLabel(JLayeredPane layeredPane) {
         this.label.setFocusable(false);
         layeredPane.add(this.label);
-        layeredPane.setLayer(this.label, 1);
+        layeredPane.setLayer(this.label, 2);
+    }
+
+    @Override
+    public JLabel getJLabel() {
+        return this.label;
     }
 
     private void move () {

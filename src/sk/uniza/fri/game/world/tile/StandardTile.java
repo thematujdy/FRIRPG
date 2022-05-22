@@ -64,6 +64,11 @@ public class StandardTile implements ITile {
         this.item = item;
     }
 
+    @Override
+    public void removeItem() {
+        this.item = null;
+    }
+
     protected void setTileID(int id) {
         this.tileID = id;
     }

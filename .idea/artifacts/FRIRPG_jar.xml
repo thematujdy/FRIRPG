@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FRIRPG:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FRIRPG_jar</output-path>
+    <root id="archive" name="FRIRPG.jar">
+      <element id="module-output" name="FRIRPG" />
+    </root>
+  </artifact>
+</component>

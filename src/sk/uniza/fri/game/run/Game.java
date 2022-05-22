@@ -42,15 +42,13 @@ public class Game implements Runnable {
     private int pauseCount;
     private boolean paused;
     private Thread gameThread;
-    private Graphics g;
     private final ArrayList<JComponent> pausePanel;
     private final ArrayList<JComponent> inventoryComponents;
-    private Player player;
-    private FRICanvas canvas;
+    private final Player player;
+    private final FRICanvas canvas;
     private JList<IItem> inventoryPane;
-    private DefaultListModel<IItem> inventory;
+    private final DefaultListModel<IItem> inventory;
     private Room currRoom;
-    private RoomGenerator roomGenerator;
 
     public Game(int graphicTileSize, int maxColTiles, int maxRowTiles,
                 KeyManager keyListener, Window window) {
@@ -68,7 +66,6 @@ public class Game implements Runnable {
         this.genereatePausePanel();
         this.gamePanel.addKeyListener(this.keyListener);
         this.inventoryComponents = new ArrayList<>();
-        this.roomGenerator = new RoomGenerator();
 
         this.canvas.setFocusable(false);
 
@@ -85,7 +82,7 @@ public class Game implements Runnable {
 
 
         //mapa
-        this.currRoom = this.roomGenerator.generateRoom(13, 15, 48, this);
+        this.generateRoom();
         this.canvas.setTiles(this.currRoom);
         this.player = new Player(this, this.keyListener);
         this.updatables.add(this.player);
@@ -93,6 +90,34 @@ public class Game implements Runnable {
         this.repaintLabels();
 
         this.gamePanel.grabFocus();
+    }
+
+    public void repaintCanvas() {
+        this.canvas.repaint();
+    }
+
+    public void generateRoom() {
+        if (this.currRoom != null) {
+            this.currRoom.clearItems(this);
+        }
+        this.currRoom = RoomGenerator.generateRoom(13, 15, 48, this);
+        this.canvas.setTiles(this.currRoom);
+        if (this.player != null) {
+            this.setPlayerCords(this.currRoom.calculateTileX(1), this.currRoom.calculateTileY(1));
+            this.player.setCurrentTile(1, 1);
+        }
+        for (ITile[] tileArr : this.currRoom.getLayout()) {
+            for (ITile tile : tileArr) {
+                if (tile.getItem() != null) {
+                    JLabel item = ((IUpdatable)tile.getItem()).getJLabel();
+                    System.out.println(item);
+                    this.layeredPane.add(item);
+                    this.layeredPane.setLayer(item, 2);
+                    System.out.println(tile.getItem());
+                }
+            }
+        }
+        this.repaintLabels();
     }
 
     public int getTileSize() {
@@ -114,7 +139,6 @@ public class Game implements Runnable {
     }
 
     public void endGame() {
-        this.gameThread.stop();
         this.gameThread = null;
     }
 
@@ -205,16 +229,6 @@ public class Game implements Runnable {
         return this.currRoom;
     }
 
-    public RoomGenerator getRoomGenerator() {
-        return this.roomGenerator;
-    }
-
-    public void setCurrRoom(Room room) {
-        this.currRoom = room;
-        this.canvas.setTiles(room);
-        this.canvas.repaint();
-    }
-
     public void setPlayerCords(int x, int y) {
         this.player.setX(x);
         this.player.setY(y);
@@ -270,6 +284,11 @@ public class Game implements Runnable {
     }
 
     public void repaintLabels() {
+        for (IUpdatable updatable : this.updatables) {
+            if (updatable != null) {
+                this.layeredPane.remove(updatable.getJLabel());
+            }
+        }
         for (IUpdatable updatable : this.updatables) {
             if (updatable != null) {
                 updatable.piantLabel(this.layeredPane);

@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class RoomGenerator {
 
-    public Room generateRoom(int rows, int cols, int tileSize, Game game) {
+    public static synchronized Room generateRoom(int rows, int cols, int tileSize, Game game) {
         Room room = new Room(cols, rows, tileSize);
         Random random = new Random();
         int seed = random.nextInt(3);
@@ -56,8 +56,12 @@ public class RoomGenerator {
         for (int i = 0; i < cols; i++) {
             room.setTile(new BrickWallTile(), i, rows - 1);
         }
-        room.getTile(0, 2).setItem(new WoodenDoor(room.getTile(0, 2), game));
-        room.getTile(0, 3).setItem(new Bible(room.getTile(0, 3)));
+        WoodenDoor door = new WoodenDoor(room.getTile(0, 2), game);
+        door.setLocation(room.calculateTileX(0), room.calculateTileY(2));
+        room.getTile(0, 2).setItem(door);
+        Bible bible = new Bible(room.getTile(5, 7));
+        bible.setLocation(room.calculateTileX(5), room.calculateTileY(7));
+        room.getTile(5, 7).setItem(bible);
         return room;
     }
 

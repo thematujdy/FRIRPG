@@ -16,6 +16,7 @@ public class Bible extends StandardItem implements IInteractable {
         this.setName("Bible");
         this.setPower(1000);
         this.setArmor(1000);
+        this.setImg("textures/item/Bible.png");
     }
 
     @Override

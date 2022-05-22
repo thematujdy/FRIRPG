@@ -1,5 +1,7 @@
 package sk.uniza.fri.game.world;
 
+import sk.uniza.fri.game.items.StandardItem;
+import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.world.tile.ITile;
 
 /**
@@ -36,5 +38,16 @@ public class Room {
 
     public ITile getTile(int x, int y) {
         return this.layout[x][y];
+    }
+
+    public void clearItems(Game game) {
+        for (ITile[] tileArr: this.layout) {
+            for (ITile tile : tileArr) {
+                StandardItem item = (StandardItem)tile.getItem();
+                if (item != null) {
+                    game.getLayeredPane().remove(item.getJLabel());
+                }
+            }
+        }
     }
 }

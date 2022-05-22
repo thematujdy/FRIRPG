@@ -1,5 +1,6 @@
 package sk.uniza.fri.game;
 
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
 /**
@@ -11,4 +12,5 @@ public interface IUpdatable {
     void update();
     void repaint();
     void piantLabel(JLayeredPane layeredPane);
+    JLabel getJLabel();
 }
