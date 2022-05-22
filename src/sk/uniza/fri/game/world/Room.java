@@ -34,4 +34,7 @@ public class Room {
         return col * this.tileSize;
     }
 
+    public ITile getTile(int x, int y) {
+        return this.layout[x][y];
+    }
 }

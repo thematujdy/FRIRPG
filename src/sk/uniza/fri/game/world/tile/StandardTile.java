@@ -1,5 +1,7 @@
 package sk.uniza.fri.game.world.tile;
 
+import sk.uniza.fri.game.items.IItem;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -14,9 +16,11 @@ public class StandardTile implements ITile {
     private BufferedImage tileImg;
     private int x;
     private int y;
+    private IItem item;
 
     public StandardTile() {
         this.tileID = 0;
+        this.item = null;
     }
 
     @Override
@@ -48,6 +52,16 @@ public class StandardTile implements ITile {
     @Override
     public Graphics getGraphics() {
         return this.tileImg.getGraphics();
+    }
+
+    @Override
+    public IItem getItem() {
+        return this.item;
+    }
+
+    @Override
+    public void setItem(IItem item) {
+        this.item = item;
     }
 
     protected void setTileID(int id) {

@@ -9,18 +9,18 @@ import java.util.ArrayList;
  */
 public class Map {
 
-    private final RoomGenerator generator;
+    //private final RoomGenerator generator;
     private final ArrayList<Room> rooms;
     private final int tileSize;
 
     public Map(int tileSize) {
-        this.generator = new RoomGenerator(this);
+        //this.generator = new RoomGenerator();
         this.rooms = new ArrayList<>();
         this.tileSize = tileSize;
     }
 
     public void addRoom(int rows, int cols) {
-        this.rooms.add(this.generator.generateRoom(rows, cols, this.tileSize));
+        //this.rooms.add(this.generator.generateRoom(rows, cols, this.tileSize));
     }
 
     public Room getRoom(int index) {

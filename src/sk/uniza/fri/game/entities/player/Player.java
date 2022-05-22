@@ -1,10 +1,15 @@
 package sk.uniza.fri.game.entities.player;
 
 import sk.uniza.fri.engine.window.KeyManager;
+import sk.uniza.fri.game.IInteractable;
+import sk.uniza.fri.game.items.Bible;
 import sk.uniza.fri.game.items.IItem;
 import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.Entity;
+import sk.uniza.fri.game.world.Room;
+import sk.uniza.fri.game.world.tile.BrickWallTile;
+import sk.uniza.fri.game.world.tile.ITile;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,11 +33,18 @@ public class Player extends Entity  implements IUpdatable {
     private BufferedImage test;
 
     private final DefaultListModel<IItem> inventory;
+    private ITile currentTile;
+    private Room currRoom;
+    private int roomX;
+    private int roomY;
+    private boolean isInteracting;
+    private int interactingCount;
 
     public Player(Game game, KeyManager keyListener) {
-        this.setX(48);
-        this.setY(48);
         this.game = game;
+        this.currRoom = this.game.getCurrentRoom();
+        this.setX(this.currRoom.calculateTileX(1));
+        this.setY(this.currRoom.calculateTileY(1));
         this.keyListener = keyListener;
         this.isMoving = false;
         this.getImage();
@@ -41,6 +53,11 @@ public class Player extends Entity  implements IUpdatable {
         this.label.setBounds(this.getX(), this.getY(), this.test.getWidth(), this.test.getHeight());
         this.label.setIcon(new ImageIcon(this.test));
         this.inventory = new DefaultListModel<>();
+        this.roomX = 1;
+        this.roomY = 1;
+        this.moveTile();
+        this.isInteracting = false;
+        this.interactingCount = 0;
     }
 
 
@@ -56,16 +73,63 @@ public class Player extends Entity  implements IUpdatable {
     public void update () {
         if (this.keyListener.isUp() && !this.isMoving) {
             this.setDirection(0);
-            this.move();
+            if (!(this.currRoom.getTile(this.roomX, this.roomY - 1) instanceof BrickWallTile)) {
+                this.roomY--;
+                this.moveTile();
+                this.move();
+            }
         } else if (this.keyListener.isDown() && !this.isMoving) {
             this.setDirection(1);
-            this.move();
+            if (!(this.currRoom.getTile(this.roomX, this.roomY + 1) instanceof BrickWallTile)) {
+                this.roomY++;
+                this.moveTile();
+                this.move();
+            }
         } else if (this.keyListener.isLeft() && !this.isMoving) {
             this.setDirection(2);
-            this.move();
+            if (!(this.currRoom.getTile(this.roomX - 1, this.roomY) instanceof BrickWallTile)) {
+                this.roomX--;
+                this.moveTile();
+                this.move();
+            }
         } else if (this.keyListener.isRight() && !this.isMoving) {
             this.setDirection(3);
-            this.move();
+            if (!(this.currRoom.getTile(this.roomX + 1, this.roomY) instanceof BrickWallTile)) {
+                this.roomX++;
+                this.moveTile();
+                this.move();
+            }
+        } else if (this.keyListener.isA() && !this.isMoving && !this.isInteracting) {
+            int x = 0;
+            int y = 0;
+            switch (this.getDirection()) {
+                case 0 -> y--;
+                case 1 -> y++;
+                case 2 -> x--;
+                case 3 -> x++;
+            }
+            ITile tile = this.currRoom.getTile(this.roomX + x, this.roomY + y);
+            if (tile.getItem() instanceof IInteractable) {
+                if (((IInteractable) tile.getItem()).interact(this)) {
+                    System.out.println("interacted");
+                }
+            } else {
+                System.out.println("couldn't interact");
+            }
+            Thread pause = new Thread(() -> {
+                this.isInteracting = true;
+                this.interactingCount = 100;
+                while (this.interactingCount != 0) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    this.interactingCount--;
+                }
+                this.isInteracting = false;
+            });
+            pause.start();
         }
 
     }
@@ -117,4 +181,15 @@ public class Player extends Entity  implements IUpdatable {
         return this.inventory;
     }
 
+    public void cahngeRoom(Room room) {
+        this.currRoom = room;
+    }
+
+    public void moveTile() {
+        this.currentTile = this.currRoom.getTile(this.roomX, this.roomY);
+    }
+
+    public void addItem(IItem item) {
+        this.inventory.addElement(item);
+    }
 }

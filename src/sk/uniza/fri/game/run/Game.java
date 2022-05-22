@@ -7,8 +7,8 @@ import sk.uniza.fri.game.Frame;
 import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.player.Player;
 import sk.uniza.fri.game.items.IItem;
-import sk.uniza.fri.game.world.Map;
 import sk.uniza.fri.game.world.Room;
+import sk.uniza.fri.game.world.RoomGenerator;
 import sk.uniza.fri.game.world.tile.ITile;
 
 import javax.swing.DefaultListModel;
@@ -45,11 +45,12 @@ public class Game implements Runnable {
     private Graphics g;
     private final ArrayList<JComponent> pausePanel;
     private final ArrayList<JComponent> inventoryComponents;
-    private final Map map;
     private Player player;
     private FRICanvas canvas;
     private JList<IItem> inventoryPane;
     private DefaultListModel<IItem> inventory;
+    private Room currRoom;
+    private RoomGenerator roomGenerator;
 
     public Game(int graphicTileSize, int maxColTiles, int maxRowTiles,
                 KeyManager keyListener, Window window) {
@@ -62,15 +63,12 @@ public class Game implements Runnable {
         this.keyListener = keyListener;
         this.pauseCount = 0;
         this.paused = false;
-        this.map = new Map(graphicTileSize);
-        this.player = new Player(this, this.keyListener);
-        this.updatables.add(this.player);
         this.window = window;
         this.pausePanel = new ArrayList<>();
         this.genereatePausePanel();
-        this.inventory = this.player.getInventory();
         this.gamePanel.addKeyListener(this.keyListener);
         this.inventoryComponents = new ArrayList<>();
+        this.roomGenerator = new RoomGenerator();
 
         this.canvas.setFocusable(false);
 
@@ -87,8 +85,11 @@ public class Game implements Runnable {
 
 
         //mapa
-        this.map.addRoom(maxRowTiles, maxColTiles);
-        this.canvas.setTiles(this.map.getRoom(0));
+        this.currRoom = this.roomGenerator.generateRoom(13, 15, 48, this);
+        this.canvas.setTiles(this.currRoom);
+        this.player = new Player(this, this.keyListener);
+        this.updatables.add(this.player);
+        this.inventory = this.player.getInventory();
         this.repaintLabels();
 
         this.gamePanel.grabFocus();
@@ -152,8 +153,10 @@ public class Game implements Runnable {
 
     public void update () {
         for (IUpdatable entity : this.updatables) {
-            entity.update();
-            entity.repaint();
+            if (entity != null) {
+                entity.update();
+                entity.repaint();
+            }
         }
     }
 
@@ -196,6 +199,25 @@ public class Game implements Runnable {
                 pause.start();
             }
         }
+    }
+
+    public Room getCurrentRoom() {
+        return this.currRoom;
+    }
+
+    public RoomGenerator getRoomGenerator() {
+        return this.roomGenerator;
+    }
+
+    public void setCurrRoom(Room room) {
+        this.currRoom = room;
+        this.canvas.setTiles(room);
+        this.canvas.repaint();
+    }
+
+    public void setPlayerCords(int x, int y) {
+        this.player.setX(x);
+        this.player.setY(y);
     }
 
     public void genereatePausePanel() {
@@ -249,7 +271,9 @@ public class Game implements Runnable {
 
     public void repaintLabels() {
         for (IUpdatable updatable : this.updatables) {
-            updatable.piantLabel(this.layeredPane);
+            if (updatable != null) {
+                updatable.piantLabel(this.layeredPane);
+            }
         }
     }
 

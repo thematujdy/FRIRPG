@@ -1,6 +1,8 @@
 package sk.uniza.fri.game.world.tile;
 
-import java.awt.*;
+import sk.uniza.fri.game.items.IItem;
+
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
@@ -15,4 +17,6 @@ public interface ITile {
     int getY();
     BufferedImage getImage();
     Graphics getGraphics();
+    IItem getItem();
+    void setItem(IItem item);
 }
