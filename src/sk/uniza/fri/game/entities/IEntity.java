@@ -12,4 +12,8 @@ public interface IEntity {
     void setY(int y);
     void setDirection(int direction);
     int getDirection();
+    int getHP();
+    void addHP(int hp);
+    int getPower();
+    void addPower(int power);
 }

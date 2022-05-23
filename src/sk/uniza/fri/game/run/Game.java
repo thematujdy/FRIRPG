@@ -5,6 +5,8 @@ import sk.uniza.fri.engine.window.MusicButton;
 import sk.uniza.fri.engine.window.Window;
 import sk.uniza.fri.game.Frame;
 import sk.uniza.fri.game.IUpdatable;
+import sk.uniza.fri.game.entities.enemy.Enemy;
+import sk.uniza.fri.game.entities.enemy.Zombie;
 import sk.uniza.fri.game.entities.player.Player;
 import sk.uniza.fri.game.items.IItem;
 import sk.uniza.fri.game.world.Room;
@@ -50,6 +52,8 @@ public class Game implements Runnable {
     private JList<IItem> inventoryPane;
     private final DefaultListModel<IItem> inventory;
     private Room currRoom;
+    private boolean isFighting;
+    private final ArrayList<Enemy> enemies;
 
     /**
      *
@@ -75,6 +79,8 @@ public class Game implements Runnable {
         this.genereatePausePanel();
         this.gamePanel.addKeyListener(this.keyListener);
         this.inventoryComponents = new ArrayList<>();
+        this.isFighting = false;
+        this.enemies = new ArrayList<>();
 
         this.canvas.setFocusable(false);
 
@@ -99,6 +105,47 @@ public class Game implements Runnable {
         this.repaintLabels();
 
         this.gamePanel.grabFocus();
+    }
+
+    public void startFight(Enemy enemy) {
+        this.isFighting = true;
+
+        Frame f = new Frame(584, 680, 0, 0);
+        JLabel frame = new JLabel(new ImageIcon(f.getFrame()));
+        frame.setBounds(20, 20, 680, 584);
+        frame.setFocusable(false);
+        this.layeredPane.add(frame);
+        this.layeredPane.setLayer(frame, 50);
+
+        JButton attackButton = new JButton("ATTACK");
+        attackButton.setBackground(Color.WHITE);
+        attackButton.setFocusable(false);
+        attackButton.setBounds(20, 554, 100, 50);
+        attackButton.addActionListener(a -> {
+        });
+        this.layeredPane.add(attackButton);
+        this.layeredPane.setLayer(attackButton, 51);
+
+        JButton adefendButton = new JButton("DEFEND");
+        adefendButton.setBackground(Color.WHITE);
+        adefendButton.setFocusable(false);
+        adefendButton.setBounds(120, 554, 100, 50);
+        adefendButton.addActionListener(a -> {
+        });
+        this.layeredPane.add(adefendButton);
+        this.layeredPane.setLayer(adefendButton, 51);
+
+        JLabel enemyLabel = new JLabel(enemy.getLabel().getIcon());
+        enemyLabel.setFocusable(false);
+        enemyLabel.setBounds(400, 20, 48, 48);
+        this.layeredPane.add(enemyLabel);
+        this.layeredPane.setLayer(enemyLabel, 51);
+
+        JLabel palyerLabel = new JLabel(this.player.getJLabel().getIcon());
+        palyerLabel.setFocusable(false);
+        palyerLabel.setBounds(100, 200, 48, 48);
+        this.layeredPane.add(palyerLabel);
+        this.layeredPane.setLayer(palyerLabel, 51);
     }
 
     public void repaintCanvas() {
@@ -126,6 +173,10 @@ public class Game implements Runnable {
                 }
             }
         }
+        Zombie zombie = new Zombie(this);
+        zombie.setLocation(2, 1);
+        zombie.piantLabel(this.layeredPane);
+        this.enemies.add(zombie);
         this.repaintLabels();
     }
 
@@ -169,7 +220,7 @@ public class Game implements Runnable {
 
             if (delta >= 1) {
                 this.keyListening();
-                if (!this.paused) {
+                if (!this.paused && !this.isFighting) {
                     this.update();
                 }
                 delta--;
@@ -191,11 +242,21 @@ public class Game implements Runnable {
                 entity.repaint();
             }
         }
+        for (Enemy enemy : this.enemies) {
+            if (enemy.getCurrentTile() == this.player.getCurrentTile()) {
+                this.player.setDirection(0);
+                this.player.getImage();
+                enemy.setDirection(1);
+                ((Zombie)enemy).setImage();
+                this.startFight(enemy);
+                break;
+            }
+        }
     }
 
     public void keyListening() {
 
-        if (this.keyListener.isExit()) {
+        if (this.keyListener.isExit() && !this.isFighting) {
             if (this.pauseCount == 0) {
                 this.pauseCount = 100;
                 if (!this.paused) {

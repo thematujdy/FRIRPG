@@ -14,6 +14,8 @@ public class Entity implements IEntity {
     // 2 = left
     // 3 = right
     private int direction;
+    private int hp;
+    private int power;
 
     @Override
     public int getX() {
@@ -47,5 +49,29 @@ public class Entity implements IEntity {
     @Override
     public int getDirection() {
         return this.direction;
+    }
+
+    @Override
+    public int getHP() {
+        return this.hp;
+    }
+
+    @Override
+    public void addHP(int hp) {
+        this.hp += hp;
+    }
+
+    @Override
+    public int getPower() {
+        return this.power;
+    }
+
+    @Override
+    public void addPower(int power) {
+        this.power += power;
+    }
+
+    public void setHP(int hp) {
+        this.hp = hp;
     }
 }

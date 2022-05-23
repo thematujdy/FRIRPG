@@ -60,6 +60,8 @@ public class Player extends Entity  implements IUpdatable {
         this.isInteracting = false;
         this.interactingCount = 0;
         this.equipement = new IItem[3];
+        this.setHP(100);
+        this.addPower(5);
     }
 
     public void setCurrentTile(int x, int y) {
@@ -239,5 +241,9 @@ public class Player extends Entity  implements IUpdatable {
 
     public void addItem(IItem item) {
         this.inventory.addElement(item);
+    }
+
+    public ITile getCurrentTile() {
+        return this.currentTile;
     }
 }

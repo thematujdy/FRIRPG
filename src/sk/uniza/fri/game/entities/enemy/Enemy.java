@@ -1,12 +1,11 @@
 package sk.uniza.fri.game.entities.enemy;
 
-import sk.uniza.fri.game.IUpdatable;
 import sk.uniza.fri.game.entities.Entity;
 import sk.uniza.fri.game.run.Game;
+import sk.uniza.fri.game.world.tile.ITile;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import java.awt.image.BufferedImage;
 
 /**
@@ -14,20 +13,24 @@ import java.awt.image.BufferedImage;
  *
  * @author matus
  */
-public class Enemy extends Entity implements IUpdatable {
+public class Enemy extends Entity {
 
-    private boolean isMoving;
     private final JLabel label;
     private final Game game;
     private int roomX;
     private int roomY;
     private int direction;
+    private ITile currTile;
 
     public Enemy(Game game) {
         this.label = new JLabel();
         this.label.setBounds(0, 0, 48, 48);
         this.game = game;
         this.direction = 0;
+    }
+
+    public ITile getCurrentTile() {
+        return this.currTile;
     }
 
     public void setDirection(int direction) {
@@ -43,30 +46,17 @@ public class Enemy extends Entity implements IUpdatable {
     }
 
     public void setTile(int x, int y) {
-        this.game.getCurrentRoom().getTile(x, y);
+        this.currTile = this.game.getCurrentRoom().getTile(x, y);
         this.roomX = x;
         this.roomY = y;
     }
 
-    @Override
-    public void update() {
-
+    public void setLocation(int x, int y) {
+        this.setTile(x, y);
+        this.getLabel().setLocation(this.currTile.getX(), this.currTile.getY());
     }
 
-    @Override
-    public void repaint() {
-        this.label.setLocation(this.getX(), this.getY());
-    }
-
-    @Override
-    public void piantLabel(JLayeredPane layeredPane) {
-        this.label.setFocusable(false);
-        layeredPane.add(this.label);
-        layeredPane.setLayer(this.label, 2);
-    }
-
-    @Override
-    public JLabel getJLabel() {
+    public JLabel getLabel() {
         return this.label;
     }
 }
