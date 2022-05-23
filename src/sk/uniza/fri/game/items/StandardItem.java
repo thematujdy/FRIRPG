@@ -96,6 +96,11 @@ public class StandardItem implements IItem, IUpdatable {
         layeredPane.remove(this.jLabel);
     }
 
+    @Override
+    public BufferedImage getImage() {
+        return this.img;
+    }
+
     protected void setImg(String path) {
         try {
             this.img = ImageIO.read(new File(path));

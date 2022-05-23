@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -50,6 +51,14 @@ public class Game implements Runnable {
     private final DefaultListModel<IItem> inventory;
     private Room currRoom;
 
+    /**
+     *
+     * @param graphicTileSize velkosť políčok
+     * @param maxColTiles počet stlpcov
+     * @param maxRowTiles počet riadkov
+     * @param keyListener key listener
+     * @param window hlavne okno
+     */
     public Game(int graphicTileSize, int maxColTiles, int maxRowTiles,
                 KeyManager keyListener, Window window) {
         this.gamePanel = new JPanel(null);
@@ -254,11 +263,71 @@ public class Game implements Runnable {
         });
         this.pausePanel.add(menuButton);
 
+        JButton equipement1 = new JButton();
+        equipement1.setFocusable(false);
+        equipement1.setBounds(570, 80, 50, 50);
+        equipement1.setBackground(Color.WHITE);
+        equipement1.addActionListener(a -> {
+            this.player.addItem(this.player.getEquipement(0));
+            this.player.removeEquipement(0);
+            equipement1.setIcon(null);
+        });
+
+        JButton equipement2 = new JButton();
+        equipement2.setFocusable(false);
+        equipement2.setBounds(570, 130, 50, 50);
+        equipement2.setBackground(Color.WHITE);
+        equipement2.addActionListener(a -> {
+            this.player.addItem(this.player.getEquipement(1));
+            this.player.removeEquipement(1);
+            equipement2.setIcon(null);
+        });
+
+
+        JButton equipement3 = new JButton();
+        equipement3.setFocusable(false);
+        equipement3.setBounds(570, 180, 50, 50);
+        equipement3.setBackground(Color.WHITE);
+        equipement3.addActionListener(a -> {
+            this.player.addItem(this.player.getEquipement(2));
+            this.player.removeEquipement(2);
+            equipement3.setIcon(null);
+        });
+
+        JButton equipButton = new JButton("EQUIP");
+        equipButton.setFocusable(false);
+        equipButton.setBounds(520, 320, 100, 50);
+        equipButton.setBackground(Color.WHITE);
+        equipButton.setEnabled(false);
+        equipButton.addActionListener(a -> {
+            if (this.player != null) {
+                this.player.setEquipement(this.inventoryPane.getSelectedValue());
+                this.player.removeItem(this.inventoryPane.getSelectedIndex());
+            }
+            if (this.player != null && this.player.getEquipement(0) != null) {
+                equipement1.setIcon(new ImageIcon(this.player.getEquipement(0).getImage()));
+            }
+            if (this.player != null && this.player.getEquipement(1) != null) {
+                equipement2.setIcon(new ImageIcon(this.player.getEquipement(1).getImage()));
+            }
+            if (this.player != null && this.player.getEquipement(2) != null) {
+                equipement3.setIcon(new ImageIcon(this.player.getEquipement(2).getImage()));
+            }
+        });
+
         JButton closeInvButton = new JButton("X");
         closeInvButton.setFocusable(false);
         closeInvButton.setBounds(520, 20, 50, 50);
         closeInvButton.setBackground(Color.RED);
         closeInvButton.addActionListener(a -> {
+            this.layeredPane.remove(equipement1);
+            this.layeredPane.remove(equipement2);
+            this.layeredPane.remove(equipement3);
+            this.inventoryComponents.remove(equipement1);
+            this.inventoryComponents.remove(equipement2);
+            this.inventoryComponents.remove(equipement3);
+            this.layeredPane.remove(equipButton);
+            this.inventoryComponents.remove(equipButton);
             this.layeredPane.remove(this.inventoryPane);
             this.gamePanel.grabFocus();
             this.layeredPane.remove(closeInvButton);
@@ -276,9 +345,32 @@ public class Game implements Runnable {
             this.inventoryPane.setModel(this.inventory);
             this.layeredPane.add(this.inventoryPane);
             this.layeredPane.setLayer(this.inventoryPane, 20);
+            this.inventoryPane.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            this.inventoryPane.addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    equipButton.setEnabled(this.inventoryPane.getSelectedIndex() != -1);
+                }
+            });
+
             this.inventoryComponents.add(closeInvButton);
             this.layeredPane.add(closeInvButton);
             this.layeredPane.setLayer(closeInvButton, 20);
+
+            this.inventoryComponents.add(equipement1);
+            this.layeredPane.add(equipement1);
+            this.layeredPane.setLayer(equipement1, 20);
+
+            this.inventoryComponents.add(equipement2);
+            this.layeredPane.add(equipement2);
+            this.layeredPane.setLayer(equipement2, 20);
+
+            this.inventoryComponents.add(equipement3);
+            this.layeredPane.add(equipement3);
+            this.layeredPane.setLayer(equipement3, 20);
+
+            this.inventoryComponents.add(equipButton);
+            this.layeredPane.add(equipButton);
+            this.layeredPane.setLayer(equipButton, 20);
         });
         this.pausePanel.add(inventoryButton);
     }

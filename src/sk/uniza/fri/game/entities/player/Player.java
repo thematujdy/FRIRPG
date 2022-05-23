@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -38,6 +39,7 @@ public class Player extends Entity  implements IUpdatable {
     private int roomY;
     private boolean isInteracting;
     private int interactingCount;
+    private final IItem[] equipement;
 
     public Player(Game game, KeyManager keyListener) {
         this.game = game;
@@ -57,6 +59,7 @@ public class Player extends Entity  implements IUpdatable {
         this.moveTile();
         this.isInteracting = false;
         this.interactingCount = 0;
+        this.equipement = new IItem[3];
     }
 
     public void setCurrentTile(int x, int y) {
@@ -66,9 +69,47 @@ public class Player extends Entity  implements IUpdatable {
         this.roomY = y;
     }
 
+    public void removeItem(int index) {
+        this.inventory.remove(index);
+    }
+
+    public void removeEquipement(int index) {
+        if (index <= this.equipement.length) {
+            this.equipement[index] = null;
+        }
+    }
+
+    public void setEquipement(IItem item) {
+        if (this.equipement[0] == null) {
+            this.equipement[0] = item;
+        } else if (this.equipement[1] == null) {
+            this.equipement[1] = item;
+        } else if (this.equipement[2] == null) {
+            this.equipement[2] = item;
+        }
+
+        System.out.println(Arrays.toString(this.equipement));
+    }
+
+    public IItem getEquipement(int index) {
+        if (index <= this.equipement.length) {
+            return this.equipement[index];
+        } else {
+            return null;
+        }
+    }
+
     public void getImage () {
         try {
-            this.test = ImageIO.read(new File("sprites/head/head_2.png"));
+            switch (this.getDirection()) {
+                case 0 -> this.test = ImageIO.read(new File("sprites/player/back.png"));
+                case 1 -> this.test = ImageIO.read(new File("sprites/player/front.png"));
+                case 2 -> this.test = ImageIO.read(new File("sprites/player/left.png"));
+                case 3 -> this.test = ImageIO.read(new File("sprites/player/right.png"));
+            }
+            if (this.label != null) {
+                this.label.setIcon(new ImageIcon(this.test));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,6 +119,7 @@ public class Player extends Entity  implements IUpdatable {
     public void update () {
         if (this.keyListener.isUp() && !this.isMoving) {
             this.setDirection(0);
+            this.getImage();
             if (!(this.currRoom.getTile(this.roomX, this.roomY - 1) instanceof BrickWallTile)) {
                 this.roomY--;
                 this.moveTile();
@@ -85,6 +127,7 @@ public class Player extends Entity  implements IUpdatable {
             }
         } else if (this.keyListener.isDown() && !this.isMoving) {
             this.setDirection(1);
+            this.getImage();
             if (!(this.currRoom.getTile(this.roomX, this.roomY + 1) instanceof BrickWallTile)) {
                 this.roomY++;
                 this.moveTile();
@@ -92,6 +135,7 @@ public class Player extends Entity  implements IUpdatable {
             }
         } else if (this.keyListener.isLeft() && !this.isMoving) {
             this.setDirection(2);
+            this.getImage();
             if (!(this.currRoom.getTile(this.roomX - 1, this.roomY) instanceof BrickWallTile)) {
                 this.roomX--;
                 this.moveTile();
@@ -99,6 +143,7 @@ public class Player extends Entity  implements IUpdatable {
             }
         } else if (this.keyListener.isRight() && !this.isMoving) {
             this.setDirection(3);
+            this.getImage();
             if (!(this.currRoom.getTile(this.roomX + 1, this.roomY) instanceof BrickWallTile)) {
                 this.roomX++;
                 this.moveTile();
@@ -184,16 +229,8 @@ public class Player extends Entity  implements IUpdatable {
         waitMove.start();
     }
 
-    public JLabel getLabel() {
-        return this.label;
-    }
-
     public DefaultListModel<IItem> getInventory() {
         return this.inventory;
-    }
-
-    public void cahngeRoom(Room room) {
-        this.currRoom = room;
     }
 
     public void moveTile() {
