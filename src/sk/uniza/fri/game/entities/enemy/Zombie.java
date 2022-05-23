@@ -7,23 +7,22 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 
-/**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
- */
 public class Zombie extends Enemy implements IUpdatable {
 
-    private boolean isMoving;
-
+    /**
+     * Konštruktor triedy Zombie
+     * @param game Inštancia hry
+     */
     public Zombie(Game game) {
         super(game);
-        this.isMoving = false;
         this.setImage();
         this.setHP(20);
         this.addPower(5);
     }
 
+    /**
+     * Metóda setImage nastavý obrázok podla aktuálneho smeru
+     */
     public void setImage() {
         try {
             switch (this.getDirection()) {
@@ -37,21 +36,25 @@ public class Zombie extends Enemy implements IUpdatable {
         }
     }
 
-    public void move() {
-        if (!this.isMoving) {
-
-        }
-    }
-
+    /**
+     * Metóda update v triede Zombie nič nerobí
+     */
     @Override
     public void update() {
     }
 
+    /**
+     * Metóda repaint() zmení lokáciu JLabelu
+     */
     @Override
     public void repaint() {
         this.getJLabel().setLocation(this.getX(), this.getY());
     }
 
+    /**
+     * Metóda paintLabel vloží JLabel do JLayerPanelu
+     * @param layeredPane JLayeredPanel posláný z inštancie hry
+     */
     @Override
     public void piantLabel(JLayeredPane layeredPane) {
         this.getJLabel().setFocusable(false);
@@ -59,6 +62,10 @@ public class Zombie extends Enemy implements IUpdatable {
         layeredPane.setLayer(this.getJLabel(), 2);
     }
 
+    /**
+     * Metóda getJLabel vracia JLabel
+     * @return Hodnota JLabelu
+     */
     @Override
     public JLabel getJLabel() {
         return this.getLabel();

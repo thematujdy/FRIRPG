@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 12. 3. 2022 - 12:07
@@ -26,12 +27,9 @@ public class Player extends Entity  implements IUpdatable {
 
     private final Game game;
     private final KeyManager keyListener;
-
     private boolean isMoving;
     private final JLabel label;
-
     private BufferedImage test;
-
     private final DefaultListModel<IItem> inventory;
     private ITile currentTile;
     private Room currRoom;
@@ -41,6 +39,11 @@ public class Player extends Entity  implements IUpdatable {
     private int interactingCount;
     private final IItem[] equipement;
 
+    /**
+     * Konštruktor triedy Player, ide o triedu hráčovej postavy
+     * @param game Inštancia hry
+     * @param keyListener Inštancia vlastného keyListeneru
+     */
     public Player(Game game, KeyManager keyListener) {
         this.game = game;
         this.currRoom = this.game.getCurrentRoom();
@@ -64,6 +67,11 @@ public class Player extends Entity  implements IUpdatable {
         this.addPower(5);
     }
 
+    /**
+     * Metóda setCurrentTile nastavý aktuálne políčko podla parametrov
+     * @param x súradnica x
+     * @param y súradnica y
+     */
     public void setCurrentTile(int x, int y) {
         this.currRoom = this.game.getCurrentRoom();
         this.currentTile = this.currRoom.getTile(x, y);
@@ -71,16 +79,52 @@ public class Player extends Entity  implements IUpdatable {
         this.roomY = y;
     }
 
+    /**
+     * Metóda getEquipementLength vráti dĺžku listu pre Equipement
+     * @return Dĺžka listu int
+     */
+    public int getEquipementLength() {
+        return this.equipement.length;
+    }
+
+    /**
+     * Metóda getRoomX vráti súradnicu x aktúalnehop políčka
+     * @return Súradnica x
+     */
+    public int getRoomX() {
+        return this.roomX;
+    }
+
+    /**
+     * Metóda getRoomY vráti súradnicu y aktúalnehop políčka
+     * @return Súradnica y
+     */
+    public int getRoomY() {
+        return this.roomY;
+    }
+
+    /**
+     * Metóda odstráni Item podla indexu
+     * @param index int index
+     */
     public void removeItem(int index) {
         this.inventory.remove(index);
     }
 
+    /**
+     * Metóda removeEquipement odstranuje Item z Equipmentu alebo teda "vyzleče" tento item z hráča podľa indexu
+     * @param index int index
+     */
     public void removeEquipement(int index) {
         if (index <= this.equipement.length) {
             this.equipement[index] = null;
         }
     }
 
+    /**
+     * Metóda setEquipement pridá item do Equipementu ak je tam vólne miesto
+     * @param item inštancia Itemu
+     */
     public void setEquipement(IItem item) {
         if (this.equipement[0] == null) {
             this.equipement[0] = item;
@@ -93,6 +137,11 @@ public class Player extends Entity  implements IUpdatable {
         System.out.println(Arrays.toString(this.equipement));
     }
 
+    /**
+     * Metóda getEquipement navráti item z Equipementu podla indexu
+     * @param index int idexu
+     * @return Návratová hodnota Itemu v určitej kolonke
+     */
     public IItem getEquipement(int index) {
         if (index <= this.equipement.length) {
             return this.equipement[index];
@@ -101,6 +150,9 @@ public class Player extends Entity  implements IUpdatable {
         }
     }
 
+    /**
+     * Metóda getImage() nastavý obrázok JLabelu podla smeru hráča
+     */
     public void getImage () {
         try {
             switch (this.getDirection()) {
@@ -117,6 +169,9 @@ public class Player extends Entity  implements IUpdatable {
         }
     }
 
+    /**
+     * Metóda update sa stará o to čo hráč v danej chvíli robí či už sú to interakcie alebo pohyb a zmena smeru
+     */
     @Override
     public void update () {
         if (this.keyListener.isUp() && !this.isMoving) {
@@ -174,7 +229,7 @@ public class Player extends Entity  implements IUpdatable {
                 this.interactingCount = 300;
                 while (this.interactingCount != 0) {
                     try {
-                        Thread.sleep(1);
+                        TimeUnit.MILLISECONDS.sleep(1);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -187,11 +242,18 @@ public class Player extends Entity  implements IUpdatable {
 
     }
 
+    /**
+     * Metóda repaint zmení polohu JLabelu podla aktúálnych súradníc
+     */
     @Override
     public void repaint () {
         this.label.setLocation(this.getX(), this.getY());
     }
 
+    /**
+     * Metóda paintLabel vloží JLabel do JLayerdPanelu
+     * @param layeredPane inštancia JLayerdPanelu
+     */
     @Override
     public void piantLabel(JLayeredPane layeredPane) {
         this.label.setFocusable(false);
@@ -199,11 +261,18 @@ public class Player extends Entity  implements IUpdatable {
         layeredPane.setLayer(this.label, 2);
     }
 
+    /**
+     * Metóda getJLabel vráti hodnotu JLabelu hráča
+     * @return JLabel hráča
+     */
     @Override
     public JLabel getJLabel() {
         return this.label;
     }
 
+    /**
+     * Metóda move sa stará o pohyb a "animáciu" pohybu
+     */
     private void move () {
         int waitTime = 200;
 
@@ -212,7 +281,7 @@ public class Player extends Entity  implements IUpdatable {
             int x = 0;
             while (x < this.game.getTileSize()) {
                 try {
-                    Thread.sleep(waitTime / this.game.getTileSize());
+                    TimeUnit.MILLISECONDS.sleep(waitTime / this.game.getTileSize());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -231,18 +300,33 @@ public class Player extends Entity  implements IUpdatable {
         waitMove.start();
     }
 
+    /**
+     * Metóda getInventory navráti inventár triedy DefaultListModel
+     * @return DefaultListModel inventár
+     */
     public DefaultListModel<IItem> getInventory() {
         return this.inventory;
     }
 
+    /**
+     * Metóda moveTile zmení aktuálne políčko podla aktuálnych súradníc
+     */
     public void moveTile() {
         this.currentTile = this.currRoom.getTile(this.roomX, this.roomY);
     }
 
+    /**
+     * Metóda addItem pridá item do inventára
+     * @param item inštancia Itemu
+     */
     public void addItem(IItem item) {
         this.inventory.addElement(item);
     }
 
+    /**
+     * Metóda getCurrentTile navráti aktuálne púolíčko
+     * @return aktuálne políčko
+     */
     public ITile getCurrentTile() {
         return this.currentTile;
     }

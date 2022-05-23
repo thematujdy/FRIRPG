@@ -79,6 +79,14 @@ public class StandardItem implements IItem, IUpdatable {
         this.tile.removeItem();
     }
 
+    public int getPower() {
+        return this.power;
+    }
+
+    public int getArmor() {
+        return this.armor;
+    }
+
     @Override
     public String toString() {
         String desc = this.name;

@@ -10,8 +10,10 @@ import java.io.File;
  */
 public class SandTile extends StandardTile {
 
+    /**
+     * Konstruktor triedy SandTile, ide o policko
+     */
     public SandTile() {
-        this.setTileID(3);
         try {
             this.setTileImg(ImageIO.read(new File("textures/tile/sand.png")));
         } catch (Exception e) {

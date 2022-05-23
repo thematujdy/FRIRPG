@@ -8,7 +8,13 @@ import sk.uniza.fri.game.world.tile.ITile;
  * @author matus
  */
 public class Chestplate extends StandardItem {
+    /**
+     * Konštruktor Itemu triedy Chestplate
+     * @param tile políčke kde sa zobrazí
+     */
     public Chestplate(ITile tile) {
         super(tile);
+        this.setName("Knight's Chestplate");
+        this.setArmor(3);
     }
 }

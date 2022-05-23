@@ -4,15 +4,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
-/**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
- */
 public class MusicPlayer {
 
     private Clip clip;
 
+    /**
+     * Konstruktor tiredy MusicPlayer, ide o jednoduchy prehrávac hudby
+     */
     public MusicPlayer () {
         Thread musicThread = new Thread(() -> {
             File music = new File("music/menu.wav");
@@ -26,6 +24,9 @@ public class MusicPlayer {
         musicThread.start();
     }
 
+    /**
+     * metoda start() spusti hudbu
+     */
     public void start () {
         if (this.clip != null) {
             this.clip.start();
@@ -33,6 +34,9 @@ public class MusicPlayer {
         }
     }
 
+    /**
+     * metoda stop() zastavi hudbu
+     */
     public void stop () {
         this.clip.stop();
     }

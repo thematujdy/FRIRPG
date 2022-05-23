@@ -10,11 +10,6 @@ import java.awt.Image;
 import java.io.File;
 import java.util.Properties;
 
-/**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
- */
 public class MusicButton {
 
     private ImageIcon musicon;
@@ -22,6 +17,9 @@ public class MusicButton {
     private final JButton musicButton;
 
 
+    /**
+     * Konstruktor triedy MusicButton, ide o tlacitko ktore sluzi na zapnutie a vypnutie hudby
+     */
     public MusicButton(Window window, MusicPlayer musicPlayer, Properties prop) {
         try {
             Image musiconimg = ImageIO.read(new File("icons/soundon.png"));

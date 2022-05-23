@@ -9,6 +9,8 @@ import sk.uniza.fri.game.entities.enemy.Enemy;
 import sk.uniza.fri.game.entities.enemy.Zombie;
 import sk.uniza.fri.game.entities.player.Player;
 import sk.uniza.fri.game.items.IItem;
+import sk.uniza.fri.game.items.ItemGenerator;
+import sk.uniza.fri.game.items.StandardItem;
 import sk.uniza.fri.game.world.Room;
 import sk.uniza.fri.game.world.RoomGenerator;
 import sk.uniza.fri.game.world.tile.ITile;
@@ -20,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
@@ -28,12 +31,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
- */
 public class Game implements Runnable {
 
     private final JPanel gamePanel;
@@ -56,10 +57,10 @@ public class Game implements Runnable {
     private final ArrayList<Enemy> enemies;
 
     /**
-     *
-     * @param graphicTileSize velkosť políčok
-     * @param maxColTiles počet stlpcov
-     * @param maxRowTiles počet riadkov
+     * Konstruktor triedy Game, ide o hlavnu triedu hry kde sa deje skoro vsetko
+     * @param graphicTileSize velkost policok
+     * @param maxColTiles pocet stlpcov
+     * @param maxRowTiles pocet riadkov
      * @param keyListener key listener
      * @param window hlavne okno
      */
@@ -107,33 +108,38 @@ public class Game implements Runnable {
         this.gamePanel.grabFocus();
     }
 
+    /**
+     * Metoda startFight vytvory prostredie boja a stara sa o jeho priebeh
+     * @param enemy Nepriatel s ktorym sa bojuje
+     */
     public void startFight(Enemy enemy) {
+        AtomicBoolean turn = new AtomicBoolean(true);
         this.isFighting = true;
+        AtomicInteger defense = new AtomicInteger();
 
-        Frame f = new Frame(584, 680, 0, 0);
+        for (int i = 0; i < this.player.getEquipementLength(); i++) {
+            if (this.player.getEquipement(i) != null && ((StandardItem)this.player.getEquipement(i)).getArmor() != 0) {
+                defense.addAndGet(((StandardItem)this.player.getEquipement(i)).getArmor());
+            }
+        }
+
+        Frame f = new Frame(584, 680);
         JLabel frame = new JLabel(new ImageIcon(f.getFrame()));
         frame.setBounds(20, 20, 680, 584);
         frame.setFocusable(false);
         this.layeredPane.add(frame);
         this.layeredPane.setLayer(frame, 50);
 
-        JButton attackButton = new JButton("ATTACK");
-        attackButton.setBackground(Color.WHITE);
-        attackButton.setFocusable(false);
-        attackButton.setBounds(20, 554, 100, 50);
-        attackButton.addActionListener(a -> {
+        JButton defendButton = new JButton("DEFEND");
+        defendButton.setBackground(Color.WHITE);
+        defendButton.setFocusable(false);
+        defendButton.setBounds(120, 554, 100, 50);
+        defendButton.addActionListener(a -> {
+            turn.set(false);
+            defense.addAndGet(3);
         });
-        this.layeredPane.add(attackButton);
-        this.layeredPane.setLayer(attackButton, 51);
-
-        JButton adefendButton = new JButton("DEFEND");
-        adefendButton.setBackground(Color.WHITE);
-        adefendButton.setFocusable(false);
-        adefendButton.setBounds(120, 554, 100, 50);
-        adefendButton.addActionListener(a -> {
-        });
-        this.layeredPane.add(adefendButton);
-        this.layeredPane.setLayer(adefendButton, 51);
+        this.layeredPane.add(defendButton);
+        this.layeredPane.setLayer(defendButton, 51);
 
         JLabel enemyLabel = new JLabel(enemy.getLabel().getIcon());
         enemyLabel.setFocusable(false);
@@ -146,12 +152,88 @@ public class Game implements Runnable {
         palyerLabel.setBounds(100, 200, 48, 48);
         this.layeredPane.add(palyerLabel);
         this.layeredPane.setLayer(palyerLabel, 51);
+
+        JLabel playerHP = new JLabel(String.valueOf(this.player.getHP()));
+        playerHP.setFocusable(false);
+        playerHP.setBounds(100, 248, 50, 50);
+        playerHP.setForeground(Color.GREEN);
+        this.layeredPane.add(playerHP);
+        this.layeredPane.setLayer(playerHP, 51);
+
+        JLabel enemyHP = new JLabel(String.valueOf(enemy.getHP()));
+        enemyHP.setFocusable(false);
+        enemyHP.setBounds(400, 68, 50, 50);
+        enemyHP.setForeground(Color.RED);
+        this.layeredPane.add(enemyHP);
+        this.layeredPane.setLayer(enemyHP, 51);
+
+        JButton attackButton = new JButton("ATTACK");
+        attackButton.setBackground(Color.WHITE);
+        attackButton.setFocusable(false);
+        attackButton.setBounds(20, 554, 100, 50);
+        attackButton.addActionListener(a -> {
+            int add = 0;
+            for (int i = 0; i < this.player.getEquipementLength(); i++) {
+                if (this.player.getEquipement(i) != null && ((StandardItem)this.player.getEquipement(i)).getPower() != 0) {
+                    add += ((StandardItem)this.player.getEquipement(i)).getPower();
+                }
+            }
+            turn.set(false);
+            enemy.addHP(-this.player.getPower() - add);
+            enemyHP.setText(String.valueOf(enemy.getHP()));
+        });
+        this.layeredPane.add(attackButton);
+        this.layeredPane.setLayer(attackButton, 51);
+
+        while (this.player.getHP() > 0 && enemy.getHP() > 0) {
+            if (!turn.get()) {
+                if (defense.get() != 0) {
+                    if (defense.get() - enemy.getPower() <= 0) {
+                        this.player.addHP(defense.get() - enemy.getPower());
+                    }
+                    defense.addAndGet(-3);
+                } else {
+                    this.player.addHP(-enemy.getPower());
+                }
+                turn.set(true);
+                playerHP.setText(String.valueOf(this.player.getHP()));
+            }
+        }
+        if (enemy.getHP() <= 0) {
+            this.layeredPane.remove(enemy.getLabel());
+            this.layeredPane.remove(playerHP);
+            this.layeredPane.remove(enemyHP);
+            this.layeredPane.remove(enemyLabel);
+            this.layeredPane.remove(palyerLabel);
+            this.layeredPane.remove(frame);
+            this.layeredPane.remove(attackButton);
+            this.layeredPane.remove(defendButton);
+            this.isFighting = false;
+            this.enemies.remove(enemy);
+            this.repaintCanvas();
+            this.player.addItem(ItemGenerator.generateItem());
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "You Died.",
+                    "FRIRPG",
+                    JOptionPane.PLAIN_MESSAGE);
+            this.endGame();
+            this.window.goToMenu();
+        }
+        this.setPlayerCords(this.currRoom.calculateTileX(this.player.getRoomX()),
+                this.currRoom.calculateTileY(this.player.getRoomY()));
     }
 
+    /**
+     * Metoda repaintCanvas prekresli JPanel "canvas" aby bol aktualny
+     */
     public void repaintCanvas() {
         this.canvas.repaint();
     }
 
+    /**
+     * Metóda zavola RoomGenerator a po vytvoreni novej miestnosti ju nastavy ako aktualnu
+     */
     public void generateRoom() {
         if (this.currRoom != null) {
             this.currRoom.clearItems(this);
@@ -180,28 +262,49 @@ public class Game implements Runnable {
         this.repaintLabels();
     }
 
+    /**
+     * Metoda getTileSize navrati velkost policka
+     * @return velkosť policka
+     */
     public int getTileSize() {
         return this.tileSize;
     }
 
+    /**
+     * Metoda getGamePanel navrati JPanel hry
+     * @return JPanel hry
+     */
     public JPanel getGamePanel() {
         return this.gamePanel;
     }
 
+    /**
+     * Metoda getLayerdPane navrati JLayerdPane
+     * @return vrstvy
+     */
     public JLayeredPane getLayeredPane() {
         return this.layeredPane;
     }
 
+    /**
+     * Metoda startGame spusti novy Thread hry
+     */
     public void startGame () {
         this.gameThread = new Thread(this);
         this.gameThread.start();
         this.paused = false;
     }
 
+    /**
+     * Metoda endGame zmaze Thread hry
+     */
     public void endGame() {
         this.gameThread = null;
     }
 
+    /**
+     * Metoda run je "srdcom" hry pohyby a aktualizacie bezia tu
+     */
     @Override
     public void run() {
         int fps = 60;
@@ -209,13 +312,10 @@ public class Game implements Runnable {
         double delta = 0;
         long prevTime = System.nanoTime();
         long curTime;
-        long timer = 0;
-        int count = 0;
 
         while (this.gameThread != null) {
             curTime = System.nanoTime();
             delta += (curTime - prevTime) / interval;
-            timer += (curTime - prevTime);
             prevTime = curTime;
 
             if (delta >= 1) {
@@ -224,17 +324,13 @@ public class Game implements Runnable {
                     this.update();
                 }
                 delta--;
-                count++;
-            }
-
-            if (timer >= 1000000000) {
-                System.out.println("FPS: " + count);
-                count = 0;
-                timer = 0;
             }
         }
     }
 
+    /**
+     * Metoda aktualizuje vsetko co sa da
+     */
     public void update () {
         for (IUpdatable entity : this.updatables) {
             if (entity != null) {
@@ -254,6 +350,9 @@ public class Game implements Runnable {
         }
     }
 
+    /**
+     * Metoda sluzi na zapnutie a vypnutie Pauzoveho menu
+     */
     public void keyListening() {
 
         if (this.keyListener.isExit() && !this.isFighting) {
@@ -283,7 +382,7 @@ public class Game implements Runnable {
                     this.paused = !this.paused;
                     while (this.pauseCount != 0) {
                         try {
-                            Thread.sleep(1);
+                            TimeUnit.MILLISECONDS.sleep(1);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -295,17 +394,29 @@ public class Game implements Runnable {
         }
     }
 
+    /**
+     * Metoda getCurrentRoom navrati actualnu miestnost
+     * @return aktualna miestnost
+     */
     public Room getCurrentRoom() {
         return this.currRoom;
     }
 
+    /**
+     * Metoda setPlayerCords nastavi hracovi suradnice
+     * @param x suradnica x
+     * @param y suradnica y
+     */
     public void setPlayerCords(int x, int y) {
         this.player.setX(x);
         this.player.setY(y);
     }
 
+    /**
+     * Metoda generatePausePanel vygeneruje Pauzový panel a všetky jeho prvky s ich logikou
+     */
     public void genereatePausePanel() {
-        Frame f = new Frame(580, 300, 0, 0, "PAUSED");
+        Frame f = new Frame(580, 300, "PAUSED");
         JLabel label = new JLabel(new ImageIcon(f.getFrame()));
         label.setBounds(20, 20, 300, 580);
         this.pausePanel.add(label);
@@ -436,6 +547,9 @@ public class Game implements Runnable {
         this.pausePanel.add(inventoryButton);
     }
 
+    /**
+     * Metoda repaintLabels prekresli všetky JLabeli
+     */
     public void repaintLabels() {
         for (IUpdatable updatable : this.updatables) {
             if (updatable != null) {
@@ -453,6 +567,13 @@ public class Game implements Runnable {
 
         private final ArrayList<ITile> tiles;
 
+        /**
+         * Konštruktor triedy FRICanvas, ide o upravený JPanel na rýchle kreslenie pozadia
+         * @param x suradnica x
+         * @param y suradnica y
+         * @param height výška
+         * @param width šírka
+         */
         public FRICanvas(int x, int y, int height, int width) {
             this.setBackground(Color.BLACK);
             this.setFocusable(false);
@@ -460,6 +581,10 @@ public class Game implements Runnable {
             this.tiles = new ArrayList<>();
         }
 
+        /**
+         * Metoda setTiles nastavý šetky políčka do ArrayListu
+         * @param room inštancia miestnosti
+         */
         public void setTiles(Room room) {
             this.tiles.clear();
             for (ITile[] tileArr:room.getLayout()) {
@@ -469,6 +594,10 @@ public class Game implements Runnable {
             this.repaint();
         }
 
+        /**
+         * Metoda paint nakreslí pozadie
+         * @param g grafika
+         */
         @Override
         public void paint(Graphics g) {
             super.paint(g);

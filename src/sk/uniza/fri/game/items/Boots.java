@@ -8,7 +8,13 @@ import sk.uniza.fri.game.world.tile.ITile;
  * @author matus
  */
 public class Boots extends StandardItem {
+    /**
+     * Konštruktor Itemu triedy Boots
+     * @param tile políčke kde sa zobrazí
+     */
     public Boots(ITile tile) {
         super(tile);
+        this.setName("Ragged Boots");
+        this.setArmor(1);
     }
 }

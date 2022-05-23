@@ -10,8 +10,10 @@ import java.io.File;
  */
 public class GrassTile extends StandardTile {
 
+    /**
+     * Konstruktor triedy GrassTile, ide o policko
+     */
     public GrassTile() {
-        this.setTileID(1);
         try {
             this.setTileImg(ImageIO.read(new File("textures/tile/grass.png")));
         } catch (Exception e) {

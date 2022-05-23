@@ -8,7 +8,13 @@ import sk.uniza.fri.game.world.tile.ITile;
  * @author matus
  */
 public class Sword extends StandardItem {
+    /**
+     * Konštruktor Itemu triedy Sword
+     * @param tile políčke kde sa zobrazí
+     */
     public Sword(ITile tile) {
         super(tile);
+        this.setName("Standard Sword");
+        this.setPower(5);
     }
 }

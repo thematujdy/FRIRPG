@@ -1,6 +1,5 @@
 package sk.uniza.fri.game.world;
 
-import sk.uniza.fri.game.items.Bible;
 import sk.uniza.fri.game.items.WoodenDoor;
 import sk.uniza.fri.game.run.Game;
 import sk.uniza.fri.game.world.tile.BrickWallTile;
@@ -17,6 +16,14 @@ import java.util.Random;
  */
 public class RoomGenerator {
 
+    /**
+     * Metoda na vytvorenie miestnosti podla parametrov
+     * @param rows riadky
+     * @param cols stlpce
+     * @param tileSize velkost policka
+     * @param game instancia hry
+     * @return vytvorena miestnost
+     */
     public static synchronized Room generateRoom(int rows, int cols, int tileSize, Game game) {
         Room room = new Room(cols, rows, tileSize);
         Random random = new Random();
@@ -59,9 +66,6 @@ public class RoomGenerator {
         WoodenDoor door = new WoodenDoor(room.getTile(0, 2), game);
         door.setLocation(room.calculateTileX(0), room.calculateTileY(2));
         room.getTile(0, 2).setItem(door);
-        Bible bible = new Bible(room.getTile(5, 7));
-        bible.setLocation(room.calculateTileX(5), room.calculateTileY(7));
-        room.getTile(5, 7).setItem(bible);
         return room;
     }
 

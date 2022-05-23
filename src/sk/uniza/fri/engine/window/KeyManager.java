@@ -4,9 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
+ * Trieda KeyManager, ide o Listener klaves nasteaveny pre moju hru
  */
 public class KeyManager implements KeyListener {
 
@@ -15,14 +13,21 @@ public class KeyManager implements KeyListener {
     private boolean left;
     private boolean right;
     private boolean a;
-    private boolean b;
     private boolean exit;
 
+    /**
+     * Tuto implementovanu metodu nevyuzivam
+     * @param e KeyEvent
+     */
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
+    /**
+     *  Metoda keyPressed(KeyEvent e) slzii na zachytenie toho ci bola stlacena klavesa
+     * @param e KeyEvent
+     */
     @Override
     public void keyPressed (KeyEvent e) {
         int key = e.getKeyCode();
@@ -47,15 +52,15 @@ public class KeyManager implements KeyListener {
             this.a = true;
         }
 
-        if (key == KeyEvent.VK_X) {
-            this.b = true;
-        }
-
         if (key == KeyEvent.VK_Q) {
             this.exit = true;
         }
     }
 
+    /**
+     *  Metoda keyReleased(KeyEvent e) sluzi na zachytenie toho ci bola pustena klavesa
+     * @param e KeyEvent
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
@@ -80,40 +85,56 @@ public class KeyManager implements KeyListener {
             this.a = false;
         }
 
-        if (key == KeyEvent.VK_X) {
-            this.b = false;
-        }
-
         if (key == KeyEvent.VK_Q) {
             this.exit = false;
         }
     }
 
 
+    /**
+     *  metoda isUp() sluzi na navratenie booleanu ci je stlacena sipka hore
+     * @return up
+     */
     public boolean isUp() {
         return this.up;
     }
 
+    /**
+     *  metoda isDown() sluzi na navratenie booleanu ci je stlacena sipka dole
+     * @return down
+     */
     public boolean isDown() {
         return this.down;
     }
 
+    /**
+     *  metoda isLeft() sluzi na navratenie booleanu ci je stlacena sipka vlavo
+     * @return left
+     */
     public boolean isLeft() {
         return this.left;
     }
 
+    /**
+     *  metoda isRight() sluzi na navratenie booleanu ci je stlacena sipka vpravo
+     * @return right
+     */
     public boolean isRight() {
         return this.right;
     }
 
+    /**
+     *  metoda isA() sluzi na navratenie booleanu ci je stlacena klavesa A
+     * @return a
+     */
     public boolean isA() {
         return this.a;
     }
 
-    public boolean isB() {
-        return this.b;
-    }
-
+    /**
+     *  metoda isExit() sluzi na navratenie booleanu ci je stlacena klavesa Q
+     * @return exit
+     */
     public boolean isExit() {
         return this.exit;
     }

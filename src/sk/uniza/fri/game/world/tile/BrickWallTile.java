@@ -10,8 +10,10 @@ import java.io.File;
  */
 public class BrickWallTile extends StandardTile {
 
+    /**
+     * Konstruktor triedy BrickWallTile, ide o policko
+     */
     public BrickWallTile() {
-        this.setTileID(2);
         try {
             this.setTileImg(ImageIO.read(new File("textures/tile/wall.png")));
         } catch (Exception e) {

@@ -3,21 +3,14 @@ package sk.uniza.fri.engine.window;
 import sk.uniza.fri.engine.menu.Menu;
 import sk.uniza.fri.engine.sound.MusicPlayer;
 import sk.uniza.fri.game.run.Game;
-import sk.uniza.fri.game.characterCreator.CharacterCreator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.Properties;
 
-/**
- * 12. 3. 2022 - 12:07
- *
- * @author matus
- */
 public class Window {
 
     private final KeyManager keyManager;
@@ -25,13 +18,18 @@ public class Window {
     private JPanel scene;
     private final MusicPlayer musicPlayer;
     private boolean music;
-
     private final int graphicTileSize;
     private final int maxColTiles;
     private final int maxRowTiles;
-
     private final Properties prop;
 
+    /**
+     * Konstruktor triedy Window, slúži na vytvorenie JFrameu a riadenie JPanelov
+     * @param graphicTileSize velkosť políčok
+     * @param maxColTiles maximálny počet stĺpcov
+     * @param maxRowTiles maximálny počet riadkov
+     * @param name názov okna
+     */
     public Window (int graphicTileSize, int maxColTiles, int maxRowTiles, String name) {
         this.prop = new Properties();
         try (FileInputStream fis = new FileInputStream("frirpg.config")) {
@@ -81,6 +79,10 @@ public class Window {
         this.window.addKeyListener(this.keyManager);
     }
 
+    /**
+     *  Metoda startGameFrame(boolean load) slúži na vytvorenie inštancie triedy Game
+     * @param load zistenie či sa načítava hra zo súboru
+     */
     public void startGameFrame (boolean load) {
         this.disposeScene();
         Game game = new Game(this.graphicTileSize, this.maxColTiles,
@@ -91,16 +93,9 @@ public class Window {
         game.startGame();
     }
 
-    public void goToCharCreator () {
-        this.disposeScene();
-        this.scene = new CharacterCreator(this.graphicTileSize * this.maxColTiles,
-                this.graphicTileSize * this.maxRowTiles,
-                this);
-
-        this.window.add(this.scene);
-        this.window.pack();
-    }
-
+    /**
+     * Metoda goToMenu slúži na vytvorenie a prejdenie do inštancie triedy Menu
+     */
     public void goToMenu () {
         this.disposeScene();
         this.scene = new Menu(this.graphicTileSize * this.maxColTiles,
@@ -110,23 +105,37 @@ public class Window {
         this.window.pack();
     }
 
+    /**
+     * Metoda slúži na odstránenie aktuálneho JPanelu
+     */
     private void disposeScene () {
         if (this.scene != null) {
             this.window.remove(this.scene);
         }
     }
 
+    /**
+     * Metoda getMusic() slúže na navrátenie toho či muzika aktuálne hrá
+     * @return music
+     */
     public boolean getMusic() {
         return this.music;
     }
 
+    /**
+     * Metoda setMusic(boolena m) slúží na nastavenie toho či muzika v aktuálnej dobe hrá
+     * @param m boolean
+     */
     public void setMusic(boolean m) {
         this.music = m;
     }
 
+    /**
+     * Metoda saveCfg() slúži na uloženie config súboru
+     */
     public void saveCfg() {
         try {
-            FileWriter writer = new FileWriter(new File("frirpg.config"));
+            FileWriter writer = new FileWriter("frirpg.config");
             this.prop.store(writer, "");
             writer.close();
         } catch (Exception e) {
@@ -134,10 +143,18 @@ public class Window {
         }
     }
 
+    /**
+     *  Metoda getConfig() slúži na navrátenie configu
+     * @return prop
+     */
     public Properties getConfig() {
         return this.prop;
     }
 
+    /**
+     *  Metoda getMusicPlayer() slúži na navrátenie prehrávača hudby, čiže inštancie triedy MusicPlayer
+     * @return musicPlayer
+     */
     public MusicPlayer getMusicPlayer() {
         return this.musicPlayer;
     }

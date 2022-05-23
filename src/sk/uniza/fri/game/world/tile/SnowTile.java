@@ -10,8 +10,10 @@ import java.io.File;
  */
 public class SnowTile extends StandardTile {
 
+    /**
+     * Konstruktor triedy SnowTile, ide o policko
+     */
     public SnowTile() {
-        this.setTileID(4);
         try {
             this.setTileImg(ImageIO.read(new File("textures/tile/snow.png")));
         } catch (Exception e) {

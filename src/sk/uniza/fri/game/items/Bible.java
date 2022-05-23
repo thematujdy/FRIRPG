@@ -11,6 +11,10 @@ import sk.uniza.fri.game.world.tile.ITile;
  */
 public class Bible extends StandardItem implements IInteractable {
 
+    /**
+     * Konštruktor Itemu triedy Biblia
+     * @param tile políčke kde sa zobrazí
+     */
     public Bible(ITile tile) {
         super(tile);
         this.setName("Bible");
@@ -19,6 +23,11 @@ public class Bible extends StandardItem implements IInteractable {
         this.setImg("textures/item/Bible.png");
     }
 
+    /**
+     * metóda Interact, zabezpečuje že sa zdvihne zo zeme
+     * @param player inštancia hráča
+     * @return vracá či prebehla interakcia
+     */
     @Override
     public boolean interact(Player player) {
         this.removeFromTile();

@@ -8,7 +8,13 @@ import sk.uniza.fri.game.world.tile.ITile;
  * @author matus
  */
 public class Helmet extends StandardItem {
+    /**
+     * Konštruktor Itemu triedy Helmet
+     * @param tile políčke kde sa zobrazí
+     */
     public Helmet(ITile tile) {
         super(tile);
+        this.setName("Miner's Helmet");
+        this.setArmor(1);
     }
 }
